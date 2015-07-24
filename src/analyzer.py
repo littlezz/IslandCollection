@@ -84,7 +84,7 @@ class BaseIsland:
 
         tips = self.get_tips(bs)
         for tip in tips:
-            response_num = self.get_div_response(tip.text)
+            response_num = int(self.get_div_response(tip.text))
             link = self.complete_link(self.get_div_link(tip))
             content = self.get_div_content(tip)
             div = DivInfo(content=content, link=link, response_num=response_num)
@@ -160,6 +160,6 @@ class Analyzer:
     def split_page(self):
         return self._island.island_split_page(self.bs)
 
-    def filter_divs(self, response_num, *args):
-        return [div for div in self.divs if div.response_num>response_num]
+    def filter_divs(self, response_gt, *args):
+        return [div for div in self.divs if div.response_num>response_gt]
 
