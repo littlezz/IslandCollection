@@ -119,7 +119,7 @@ class ADNMBIsland(BaseIsland, metaclass=IslandMeta):
             return None
 
     def get_div_content(self, bs):
-        content_tag = bs.find('div', class_='quote')
+        content_tag = bs.parent.find('div', class_='quote')
         if content_tag:
             return content_tag.text
         else:
