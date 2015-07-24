@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import urllib.parse
 from collections import namedtuple
 import re
-
+from urllib import parse
 __author__ = 'zz'
 
 
@@ -16,31 +16,27 @@ class IslandNotDetectError(Exception):
     pass
 
 
+
+
+
+
 class IslandMeta(type):
 
-    def __new__(cls, name, bases, ns):
-
+    def __init__(cls, name, bases, ns):
         island_name = ns.get('_island_name')
         island_netloc = ns.get('_island_netloc')
         assert island_name, 'Not define _island_name in {} class'.format(name)
         assert island_netloc, 'Not define _island_netloc in {} class'.format(name)
 
-        ns.pop('_island_name')
-        ns.pop('_island_netloc')
-
-        # rename subclass method
-        for name in ns:
-            if not name.startswith('_'):
-                value = ns.pop(name)
-                ns['_' + island_name + '_' + name] = value
-
-        # register island and netloc
+         # register island and netloc
         island_netloc_table.update({island_netloc: island_name})
 
         # register island class
         island_class_table.update({island_name: cls})
 
-        return super().__new__(cls, name, bases, ns)
+        super().__init__(name, bases, ns)
+
+
 
 
 
@@ -65,14 +61,13 @@ class BaseIsland:
 
     def get_tips(self, bs):
         """
-        BeautifulSoup object that contain tips content
+        return a list of BeautifulSoup object that contain tips content
         """
         raise NotImplementedError
 
     def get_div_link(self, bs):
         """
-        return the link href string, eg, 'http://xx.com'
-        """
+        return the link href string, eg, 'http://xx.com', or /xx/xx.html """
         raise NotImplementedError
 
     def get_div_content(self, bs):
@@ -88,15 +83,19 @@ class BaseIsland:
         result = []
 
         tips = self.get_tips(bs)
-        for tip in tips
+        for tip in tips:
             response_num = self.get_div_response(tip.text)
-            link = self.get_div_link(tip)
+            link = self.complete_link(self.get_div_link(tip))
             content = self.get_div_content(tip)
             div = DivInfo(content=content, link=link, response_num=response_num)
             result.append(div)
 
         return result
 
+
+    def complete_link(self, url):
+        base = 'http://' + self._island_netloc
+        return parse.urljoin(base, url)
 
 
 
@@ -109,7 +108,22 @@ class ADNMBIsland(BaseIsland, metaclass=IslandMeta):
     _island_netloc = 'h.adnmb.com'
 
 
+    def get_tips(self, bs):
+        return bs.find_all('span', class_='warn_txt2')
 
+    def get_div_link(self, bs):
+        tag_a = bs.parent.find('a', class_='qlink')
+        if tag_a:
+            return tag_a.get('href')
+        else:
+            return None
+
+    def get_div_content(self, bs):
+        content_tag = bs.find('div', class_='quote')
+        if content_tag:
+            return content_tag.text
+        else:
+            return None
 
 
 
@@ -134,23 +148,17 @@ class Analyzer:
         self.divs = self.split_page()
 
     def determine_island_name(self):
-        netloc = urllib.parse.urlparse(self.url)
-        for url, name in island_netloc_table:
+        netloc = urllib.parse.urlparse(self.url).netloc
+        for url, name in island_netloc_table.items():
             if url == netloc:
                 return name
         else:
-            raise IslandNotDetectError
+            raise IslandNotDetectError('netloc is {}'.format(netloc))
 
 
-    def _call_method(self, suffix):
-        """
-        通过岛名调用相应的方法
-        """
-        method_name = '_' + self.island_name + '_' + suffix
-        return getattr(self._island, method_name)()
 
     def split_page(self):
-        return self._call_method('island_split_page')
+        return self._island.island_split_page(self.bs)
 
     def filter_divs(self, response_num, *args):
         return [div for div in self.divs if div.response_num>response_num]
