@@ -40,36 +40,36 @@ class IslandMeta(type):
 
 
 
-class ADNMBIsland(metaclass=IslandMeta):
+class ADNMBIslandMixin(metaclass=IslandMeta):
     """
     养老岛
     """
     _island_name = 'adnmb'
     _island_netloc = 'h.adnmb.com'
 
-    def get_response_num(self):
+    def island_get_response_num(self):
         pass
 
-    def split_page(self):
+    def island_split_page(self):
         pass
 
 
-class NMBIsland(metaclass=IslandMeta):
+class NMBIslandMixin(metaclass=IslandMeta):
     """
     主岛
     """
     _island_name = 'nimingban'
     _island_netloc = 'h.nimingban.com'
 
-    def get_response_num(self):
+    def island_get_response_num(self):
         pass
 
-    def split_page(self):
+    def island_split_page(self):
         pass
 
 
 
-class Analyzer:
+class Analyzer(ADNMBIslandMixin, NMBIslandMixin):
 
     def __init__(self, url, data:bytes):
         self.url = url
@@ -94,8 +94,8 @@ class Analyzer:
         return getattr(self, method_name)()
 
     def split_page(self):
-        return self._call_method('split_page')
+        return self._call_method('island_split_page')
 
     def get_response_num(self):
-        return self._call_method('get_response_num')
+        return self._call_method('island_get_response_num')
 
