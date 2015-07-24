@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
 import urllib.parse
 from collections import namedtuple
+import re
+
 __author__ = 'zz'
 
 
@@ -8,6 +10,7 @@ __author__ = 'zz'
 island_netloc_table = {}
 island_class_table = {}
 DivInfo = namedtuple('DivInfo', ['content', 'link', 'response_num'])
+
 
 class IslandNotDetectError(Exception):
     pass
@@ -39,21 +42,62 @@ class IslandMeta(type):
 
         return super().__new__(cls, name, bases, ns)
 
-class EmptyMeta(type):
-    pass
-
 
 
 class BaseIsland:
+
     _island_name = ''
     _island_netloc = ''
+    _count_pattern = re.compile(r'\s(\d+)\s')
 
-    @staticmethod
-    def island_split_page(bs):
+    def get_div_response(self, text):
+        """
+        return response count from text
+        """
+        match = self._count_pattern.search(text)
+        if match:
+            return match.group(1)
+        else:
+            # may be the text is 'sega'
+            return 0
+
+
+
+    def get_tips(self, bs):
+        """
+        BeautifulSoup object that contain tips content
+        """
+        raise NotImplementedError
+
+    def get_div_link(self, bs):
+        """
+        return the link href string, eg, 'http://xx.com'
+        """
+        raise NotImplementedError
+
+    def get_div_content(self, bs):
+        """
+        return content
+        """
+        raise NotImplementedError
+
+    def island_split_page(self, bs):
         """
         must return DivInfo object
         """
-        raise NotImplementedError
+        result = []
+
+        tips = self.get_tips(bs)
+        for tip in tips
+            response_num = self.get_div_response(tip.text)
+            link = self.get_div_link(tip)
+            content = self.get_div_content(tip)
+            div = DivInfo(content=content, link=link, response_num=response_num)
+            result.append(div)
+
+        return result
+
+
 
 
 
@@ -64,9 +108,9 @@ class ADNMBIsland(BaseIsland, metaclass=IslandMeta):
     _island_name = 'adnmb'
     _island_netloc = 'h.adnmb.com'
 
-    @staticmethod
-    def island_split_page(bs):
-        pass
+
+
+
 
 
 class NMBIsland(BaseIsland, metaclass=IslandMeta):
@@ -77,9 +121,6 @@ class NMBIsland(BaseIsland, metaclass=IslandMeta):
     _island_netloc = 'h.nimingban.com'
 
 
-    @staticmethod
-    def island_split_page(bs):
-        pass
 
 
 
