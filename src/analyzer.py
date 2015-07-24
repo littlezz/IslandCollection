@@ -65,12 +65,13 @@ class BaseIsland:
         """
         raise NotImplementedError
 
-    def get_div_link(self, bs):
+    def get_div_link(self, tip):
         """
+        tip is a BeautifulSoup object contain response tip
         return the link href string, eg, 'http://xx.com', or /xx/xx.html """
         raise NotImplementedError
 
-    def get_div_content(self, bs):
+    def get_div_content(self, tip):
         """
         return content
         """
@@ -111,15 +112,15 @@ class ADNMBIsland(BaseIsland, metaclass=IslandMeta):
     def get_tips(self, bs):
         return bs.find_all('span', class_='warn_txt2')
 
-    def get_div_link(self, bs):
-        tag_a = bs.parent.find('a', class_='qlink')
+    def get_div_link(self, tip):
+        tag_a = tip.parent.find('a', class_='qlink')
         if tag_a:
             return tag_a.get('href')
         else:
             return None
 
-    def get_div_content(self, bs):
-        content_tag = bs.parent.find('div', class_='quote')
+    def get_div_content(self, tip):
+        content_tag = tip.parent.find('div', class_='quote')
         if content_tag:
             return content_tag.text
         else:
