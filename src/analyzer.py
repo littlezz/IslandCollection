@@ -142,7 +142,7 @@ class Analyzer:
 
     def __init__(self, url, data:bytes):
         self.url = url
-        self.bs = BeautifulSoup(data)
+        self.data = data
         self.island_name = self.determine_island_name()
         self._island = island_class_table[self.island_name]()
         self.divs = self.split_page()
@@ -158,7 +158,8 @@ class Analyzer:
 
 
     def split_page(self):
-        return self._island.island_split_page(self.bs)
+        bs = BeautifulSoup(self.data)
+        return self._island.island_split_page(bs)
 
     def filter_divs(self, response_gt, *args):
         return [div for div in self.divs if div.response_num>response_gt]
