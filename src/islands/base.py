@@ -43,6 +43,7 @@ class BaseIsland(metaclass=IslandMeta):
 
     _island_name = ''
     _island_netloc = ''
+    _island_scheme = 'http'
     _count_pattern = re.compile(r'\s(\d+)\s')
     json_data = False
 
@@ -54,6 +55,9 @@ class BaseIsland(metaclass=IslandMeta):
 
         self.current_url = current_url
 
+    @property
+    def base_url(self):
+        return parse.urlunsplit((self._island_scheme, self._island_netloc, '', '', ''))
 
     def get_div_response(self, text):
         """
