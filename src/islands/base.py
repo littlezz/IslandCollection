@@ -179,5 +179,5 @@ class NextPageJsonParameterMixin:
         return url
 
 
-    def next_page_valid(self):
+    def next_page_valid(self, url):
         return self._has_next_page
