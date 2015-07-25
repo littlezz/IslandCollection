@@ -22,7 +22,7 @@ class Analyzer:
         self.url = url
         self.res = res
         self.island_name = self.determine_island_name()
-        self._island = island_class_table[self.island_name]()
+        self._island = self._create_island_obj()
         self.divs = self.split_page()
 
     def determine_island_name(self):
@@ -34,13 +34,12 @@ class Analyzer:
             raise IslandNotDetectError('netloc is {}'.format(netloc))
 
 
+    def _create_island_obj(self):
+        island_class = island_class_table[self.island_name]
+        return island_class(self.url, self.res)
 
     def split_page(self):
-        if self._island.json_data:
-            pd = self.res.json()
-        else:
-            pd = BeautifulSoup(self.res.content)
-        return self._island.island_split_page(pd)
+        return self._island.island_split_page()
 
     def filter_divs(self, response_gt, *args):
         return [div for div in self.divs if div.response_num>response_gt]

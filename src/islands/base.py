@@ -1,6 +1,7 @@
 from collections import namedtuple
 import re
 from urllib import parse
+from bs4 import BeautifulSoup
 
 __author__ = 'zz'
 
@@ -44,6 +45,15 @@ class BaseIsland(metaclass=IslandMeta):
     _count_pattern = re.compile(r'\s(\d+)\s')
     json_data = False
 
+    def __init__(self, current_url, res):
+        if self.json_data:
+            self.pd = BeautifulSoup(res.content)
+        else:
+            self.pd = res.json()
+
+        self.current_url = current_url
+
+
     def get_div_response(self, text):
         """
         return response count from text
@@ -82,12 +92,13 @@ class BaseIsland(metaclass=IslandMeta):
         """
         raise NotImplementedError
 
-    def island_split_page(self, pd):
+    def island_split_page(self):
         """
         must return DivInfo object
         """
         result = []
 
+        pd = self.pd
         tips = self.get_tips(pd)
         for tip in tips:
             response_num = int(self.get_div_response(tip.text))
