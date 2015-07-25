@@ -154,7 +154,7 @@ class NextPageJsonParameterMixin:
     def get_max_page(self):
         return int(self.pd['page']['size'])
 
-    def get_next_page(self):
+    def get_next_page_url(self):
         max_page = self.get_max_page()
 
 
