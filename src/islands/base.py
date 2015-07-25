@@ -139,7 +139,7 @@ class NextPageStaticHtmlMixin:
             current_page_num = 0
 
         next_page_num = int(current_page_num) + 1
-        next_basename = '.'.join(str(next_page_num), suffix)
+        next_basename = '.'.join((str(next_page_num), suffix))
 
         return parse.urljoin(os.path.dirname(self.current_url), next_basename)
 

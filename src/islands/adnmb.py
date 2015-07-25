@@ -1,9 +1,9 @@
-from src.islands.base import BaseIsland
+from src.islands.base import BaseIsland, NextPageStaticHtmlMixin
 
 __author__ = 'zz'
 
 
-class ADNMBIsland(BaseIsland):
+class ADNMBIsland(NextPageStaticHtmlMixin, BaseIsland):
     """
     养老岛
     """
