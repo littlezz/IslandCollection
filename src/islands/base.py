@@ -86,7 +86,7 @@ class BaseIsland(metaclass=IslandMeta):
         """
         raise NotImplementedError
 
-    def next_page(self, pd):
+    def next_page(self):
         """
         return next page url
         """
