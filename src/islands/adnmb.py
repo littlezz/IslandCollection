@@ -1,4 +1,4 @@
-from .base import BaseIsland
+from src.islands.base import BaseIsland
 
 __author__ = 'zz'
 

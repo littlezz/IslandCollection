@@ -22,7 +22,7 @@ class IslandNotDetectError(Exception):
 class IslandMeta(type):
 
     def __init__(cls, name, bases, ns):
-        if not cls is BaseIsland:
+        if name != 'BaseIsland':
             island_name = ns.get('_island_name')
             island_netloc = ns.get('_island_netloc')
             assert island_name , 'Not define _island_name in {} class'.format(name)
