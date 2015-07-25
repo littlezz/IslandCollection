@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup
-import urllib.parse
 from collections import namedtuple
 import re
 from urllib import parse
@@ -149,7 +148,7 @@ class Analyzer:
         self.divs = self.split_page()
 
     def determine_island_name(self):
-        netloc = urllib.parse.urlparse(self.url).netloc
+        netloc = parse.urlparse(self.url).netloc
         for url, name in island_netloc_table.items():
             if url == netloc:
                 return name
