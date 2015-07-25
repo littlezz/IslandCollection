@@ -146,3 +146,31 @@ class NextPageStaticHtmlMixin:
     def next_page_valid(self, next_page_url):
         return requests.head(next_page_url).ok
 
+
+class NextPageJsonParameterMixin:
+    _has_next_page = True
+
+
+    def get_max_page(self):
+        return int(self.pd['page']['size'])
+
+    def get_next_page(self):
+        max_page = self.get_max_page()
+
+
+        base_url, query = parse.splitquery(self.current_url)
+        if not query:
+            query='page=0'
+
+        _, count = parse.parse_qsl(query)[0]
+        count = int(count) + 1
+        if count > max_page:
+            self._has_next_page = False
+
+        next_query = parse.urlencode({'page': count})
+        url = base_url+ '?' + next_query
+        return url
+
+
+    def next_page_valid(self):
+        return self._has_next_page
