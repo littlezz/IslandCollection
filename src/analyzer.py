@@ -18,8 +18,8 @@ __author__ = 'zz'
 
 class Analyzer:
 
-    def __init__(self, url, res):
-        self.url = url
+    def __init__(self, res):
+        self.url = res.url
         self.res = res
         self.island_name = self.determine_island_name()
         self._island = self._create_island_obj()
