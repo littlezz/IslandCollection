@@ -2,7 +2,8 @@ from collections import namedtuple
 import re
 from urllib import parse
 from bs4 import BeautifulSoup
-
+import os.path
+import requests
 __author__ = 'zz'
 
 
@@ -123,4 +124,25 @@ class BaseIsland(metaclass=IslandMeta):
     def complete_link(self, url):
         base = 'http://' + self._island_netloc
         return parse.urljoin(base, url)
+
+
+class NextPageStaticHtmlMixin:
+    _static_count_pattern = re.compile(r'(\d+)')
+
+    def get_next_page_url(self):
+        path = parse.urlparse(self.current_url).path
+        basename = os.path.basename(path)
+        # static html basename must be d.htm(l)
+        current_page_num, suffix  = basename.split('.')
+
+        if current_page_num == 'index':
+            current_page_num = 0
+
+        next_page_num = int(current_page_num) + 1
+        next_basename = '.'.join(str(next_page_num), suffix)
+
+        return parse.urljoin(os.path.dirname(self.current_url), next_basename)
+
+    def next_page_valid(self, next_page_url):
+        return requests.head(next_page_url).ok
 
