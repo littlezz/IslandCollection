@@ -59,10 +59,11 @@ class BaseIsland(metaclass=IslandMeta):
     def root_url(self):
         return parse.urlunsplit((self._island_scheme, self._island_netloc, '', '', ''))
 
-    def get_div_response(self, text):
+    def get_div_response_num(self, tip):
         """
-        return response count from text
+        return response count
         """
+        text = tip.text
         match = self._count_pattern.search(text)
         if match:
             return match.group(1)
@@ -116,7 +117,7 @@ class BaseIsland(metaclass=IslandMeta):
         pd = self.pd
         tips = self.get_tips(pd)
         for tip in tips:
-            response_num = int(self.get_div_response(tip.text))
+            response_num = int(self.get_div_response_num(tip))
             link = self.complete_link(self.get_div_link(tip))
             content = self.get_div_content(tip)
             div = DivInfo(content=content, link=link, response_num=response_num)
