@@ -56,7 +56,7 @@ class BaseIsland(metaclass=IslandMeta):
         self.current_url = current_url
 
     @property
-    def base_url(self):
+    def root_url(self):
         return parse.urlunsplit((self._island_scheme, self._island_netloc, '', '', ''))
 
     def get_div_response(self, text):
@@ -126,8 +126,7 @@ class BaseIsland(metaclass=IslandMeta):
 
 
     def complete_link(self, url):
-        base = 'http://' + self._island_netloc
-        return parse.urljoin(base, url)
+        return parse.urljoin(self.root_url, url)
 
 
 class NextPageStaticHtmlMixin:
@@ -145,7 +144,10 @@ class NextPageStaticHtmlMixin:
         next_page_num = int(current_page_num) + 1
         next_basename = '.'.join((str(next_page_num), suffix))
 
-        return parse.urljoin(os.path.dirname(self.current_url), next_basename)
+
+        # In [73]: parse.urljoin('gg/h.html','gg.html')
+        # Out[73]: 'gg/gg.html'
+        return parse.urljoin(self.current_url, next_basename)
 
     def next_page_valid(self, next_page_url):
         return requests.head(next_page_url).ok
