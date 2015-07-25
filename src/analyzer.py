@@ -44,6 +44,7 @@ class BaseIsland:
     _island_name = ''
     _island_netloc = ''
     _count_pattern = re.compile(r'\s(\d+)\s')
+    json_data = False
 
     def get_div_response(self, text):
         """
@@ -58,9 +59,10 @@ class BaseIsland:
 
 
 
-    def get_tips(self, bs):
+    def get_tips(self, pd):
         """
-        return a list of BeautifulSoup object that contain tips content
+        :param pd: a BeautifulSoup object or json object, determine by json_data
+        return a list of  object that contain tips content
         """
         raise NotImplementedError
 
@@ -76,13 +78,13 @@ class BaseIsland:
         """
         raise NotImplementedError
 
-    def island_split_page(self, bs):
+    def island_split_page(self, pd):
         """
         must return DivInfo object
         """
         result = []
 
-        tips = self.get_tips(bs)
+        tips = self.get_tips(pd)
         for tip in tips:
             response_num = int(self.get_div_response(tip.text))
             link = self.complete_link(self.get_div_link(tip))
@@ -108,8 +110,8 @@ class ADNMBIsland(BaseIsland, metaclass=IslandMeta):
     _island_netloc = 'h.adnmb.com'
 
 
-    def get_tips(self, bs):
-        return bs.find_all('span', class_='warn_txt2')
+    def get_tips(self, pd):
+        return pd.find_all('span', class_='warn_txt2')
 
     def get_div_link(self, tip):
         tag_a = tip.parent.find('a', class_='qlink')
@@ -140,9 +142,9 @@ class NMBIsland(BaseIsland, metaclass=IslandMeta):
 
 class Analyzer:
 
-    def __init__(self, url, data:bytes):
+    def __init__(self, url, res):
         self.url = url
-        self.data = data
+        self.res = res
         self.island_name = self.determine_island_name()
         self._island = island_class_table[self.island_name]()
         self.divs = self.split_page()
@@ -158,8 +160,11 @@ class Analyzer:
 
 
     def split_page(self):
-        bs = BeautifulSoup(self.data)
-        return self._island.island_split_page(bs)
+        if self._island.json_data:
+            pd = self.res.json()
+        else:
+            pd = BeautifulSoup(self.res.content)
+        return self._island.island_split_page(pd)
 
     def filter_divs(self, response_gt, *args):
         return [div for div in self.divs if div.response_num>response_gt]
