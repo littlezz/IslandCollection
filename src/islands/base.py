@@ -46,7 +46,7 @@ class BaseIsland(metaclass=IslandMeta):
     json_data = False
 
     def __init__(self, current_url, res):
-        if self.json_data:
+        if not self.json_data:
             self.pd = BeautifulSoup(res.content)
         else:
             self.pd = res.json()
