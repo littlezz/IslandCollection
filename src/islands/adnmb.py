@@ -27,3 +27,5 @@ class ADNMBIsland(BaseIsland):
             return content_tag.text
         else:
             return None
+
+

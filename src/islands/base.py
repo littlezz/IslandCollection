@@ -86,11 +86,21 @@ class BaseIsland(metaclass=IslandMeta):
         """
         raise NotImplementedError
 
+    def get_next_page_url(self):
+        raise NotImplementedError
+
+    def next_page_valid(self, next_page_url):
+        raise NotImplementedError
+
     def next_page(self):
         """
         return next page url
         """
-        raise NotImplementedError
+        next_page_url = self.get_next_page_url()
+        if self.next_page_valid(next_page_url):
+            return next_page_url
+        else:
+            return None
 
     def island_split_page(self):
         """
@@ -113,3 +123,4 @@ class BaseIsland(metaclass=IslandMeta):
     def complete_link(self, url):
         base = 'http://' + self._island_netloc
         return parse.urljoin(base, url)
+
