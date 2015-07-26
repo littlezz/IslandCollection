@@ -6,3 +6,4 @@ __pycache__/
 .idea/
 
 simple_test.py
+db.sqlite3
