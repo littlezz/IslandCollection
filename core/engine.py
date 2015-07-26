@@ -35,16 +35,24 @@ class Engine:
 
 
     def run(self):
-        while True:
-            url = self._task_queue.get()
-            if url is _sentinel:
-                self._task_queue.put(url)
-                return
+        try:
+            while True:
+                # data is (url, response_gt)
+                data = self._task_queue.get()
+                if data is _sentinel:
+                    self._task_queue.put(data)
+                    return
+                else:
+                    url, response_gt = data
 
-            r = self.fetch(url)
-            a = Analyzer(r)
-            self.add_result(a.filter_divs(response_gt=self.url_tasks[r.url]))
-            self.add_task(a.next_page())
+                r = self.fetch(url)
+                a = Analyzer(r)
+                self.add_result(a.filter_divs(response_gt=response_gt))
+                self.add_task(a.next_page(), response_gt)
+
+        except BaseException as e:
+            # TODO: log error
+            print(type(e), e)
 
 
     def shutdown(self):
@@ -61,7 +69,7 @@ class Engine:
     def add_result(self, results):
         pass
 
-    def add_task(self, url):
+    def add_task(self, url, response_gt):
         pass
 
 
