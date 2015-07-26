@@ -17,7 +17,11 @@ class Engine:
         self._task_queue = queue.Queue()
         self.result_queue = queue.Queue()
         self._thread_tasks = []
-        self.is_run = False
+        self._running = False
+
+    @property
+    def is_run(self):
+        return self._running
 
     def start(self):
         for i in range(self.max_thread):
@@ -25,7 +29,7 @@ class Engine:
             t.start()
             self._thread_tasks.append(t)
 
-        self.is_run = True
+        self._running = True
 
 
 
@@ -41,6 +45,11 @@ class Engine:
             self.add_result(a.filter_divs(response_gt=self.url_tasks[r.url]))
             self.add_task(a.next_page())
 
+
+    def stop(self):
+        self._running = False
+        self._task_queue.put(_sentinel)
+
     def fetch(self, url):
         pass
 
@@ -49,6 +58,8 @@ class Engine:
 
     def add_task(self, url):
         pass
+
+
 
 
 
