@@ -15,7 +15,8 @@ class Engine:
         self.url_tasks = tasks
         self.max_thread = max_thread
         self._task_queue = queue.Queue()
-        self.result_queue = queue.Queue()
+        self._result_cache_queue = queue.Queue()
+        self._results = []
         self._thread_tasks = []
         self._running = False
         self._shutdown_lock = threading.Lock()
@@ -23,6 +24,10 @@ class Engine:
     @property
     def is_run(self):
         return self._running
+
+    @property
+    def results(self):
+        pass
 
     def start(self):
         for i in range(self.max_thread):
@@ -45,9 +50,9 @@ class Engine:
                 else:
                     url, response_gt = data
 
-                r = self.fetch(url)
+                r = self._fetch(url)
                 a = Analyzer(r)
-                self.add_result(a.filter_divs(response_gt=response_gt))
+                self._add_result(a.filter_divs(response_gt=response_gt))
                 self.add_task(a.next_page(), response_gt)
 
         except BaseException as e:
@@ -63,11 +68,13 @@ class Engine:
         for t in self._thread_tasks:
             t.join()
 
-    def fetch(self, url):
-        pass
+    def _fetch(self, url):
+        r = requests.get(url)
+        return r
 
-    def add_result(self, results):
-        pass
+    def _add_result(self, results):
+        for result in results:
+            self._result_cache_queue.put(result)
 
     def add_task(self, url, response_gt):
         pass
