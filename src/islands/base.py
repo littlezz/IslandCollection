@@ -11,7 +11,7 @@ island_netloc_table = {}
 island_class_table = {}
 
 
-DivInfo = namedtuple('DivInfo', ['content', 'link', 'response_num'])
+DivInfo = namedtuple('DivInfo', ['content', 'link', 'response_num', 'image'])
 
 
 class IslandNotDetectError(Exception):
@@ -46,6 +46,7 @@ class BaseIsland(metaclass=IslandMeta):
     _island_scheme = 'http'
     _count_pattern = re.compile(r'\s(\d+)\s')
     json_data = False
+    show_image = True
 
     def __init__(self, current_url, res):
         if not self.json_data:
@@ -92,6 +93,9 @@ class BaseIsland(metaclass=IslandMeta):
         """
         raise NotImplementedError
 
+    def get_div_image(self, tip):
+        raise NotImplementedError
+
     def get_next_page_url(self):
         raise NotImplementedError
 
@@ -120,7 +124,8 @@ class BaseIsland(metaclass=IslandMeta):
             response_num = int(self.get_div_response_num(tip))
             link = self.complete_link(self.get_div_link(tip))
             content = self.get_div_content(tip)
-            div = DivInfo(content=content, link=link, response_num=response_num)
+            image = self.get_div_image(tip) if self.show_image else ''
+            div = DivInfo(content=content, link=link, response_num=response_num, image=image)
             result.append(div)
 
         return result
