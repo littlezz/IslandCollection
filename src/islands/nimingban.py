@@ -23,3 +23,6 @@ class NiMingBanIsland(NextPageJsonParameterMixin, BaseIsland):
     def get_div_response_num(self, tip):
         return tip['replyCount']
 
+    def get_div_image(self, tip):
+        return tip['image']
+
