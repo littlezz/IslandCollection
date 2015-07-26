@@ -107,7 +107,7 @@ class BaseIsland(metaclass=IslandMeta):
         return next page url
         """
         next_page_url = self.get_next_page_url()
-        if self.next_page_valid(next_page_url):
+        if next_page_url and self.next_page_valid(next_page_url):
             return next_page_url
         else:
             return None
