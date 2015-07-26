@@ -19,14 +19,14 @@ class ADNMBIsland(NextPageStaticHtmlMixin, BaseIsland):
         if tag_a:
             return tag_a.get('href')
         else:
-            return None
+            return ''
 
     def get_div_content(self, tip):
         content_tag = tip.parent.find('div', class_='quote')
         if content_tag:
             return content_tag.text
         else:
-            return None
+            return ''
 
     def get_div_image(self, tip):
         img_tag =  tip.parent.find('img', class_='img')

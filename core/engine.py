@@ -2,7 +2,7 @@ import queue
 from threading import Thread
 import requests
 from .analyzer import Analyzer
-
+import threading
 __author__ = 'zz'
 
 
@@ -18,6 +18,7 @@ class Engine:
         self.result_queue = queue.Queue()
         self._thread_tasks = []
         self._running = False
+        self._shutdown_lock = threading.Lock()
 
     @property
     def is_run(self):
@@ -38,7 +39,7 @@ class Engine:
             url = self._task_queue.get()
             if url is _sentinel:
                 self._task_queue.put(url)
-                break
+                return
 
             r = self.fetch(url)
             a = Analyzer(r)
@@ -46,9 +47,13 @@ class Engine:
             self.add_task(a.next_page())
 
 
-    def stop(self):
-        self._running = False
-        self._task_queue.put(_sentinel)
+    def shutdown(self):
+        with self._shutdown_lock:
+            self._running = False
+            self._task_queue.put(_sentinel)
+
+        for t in self._thread_tasks:
+            t.join()
 
     def fetch(self, url):
         pass
@@ -58,6 +63,7 @@ class Engine:
 
     def add_task(self, url):
         pass
+
 
 
 
