@@ -125,6 +125,8 @@ class BaseIsland(metaclass=IslandMeta):
             link = self.complete_link(self.get_div_link(tip))
             content = self.get_div_content(tip)
             image = self.get_div_image(tip) if self.show_image else ''
+            image = self.complete_link(image)
+
             div = DivInfo(content=content, link=link, response_num=response_num, image=image)
             result.append(div)
 
@@ -132,6 +134,8 @@ class BaseIsland(metaclass=IslandMeta):
 
 
     def complete_link(self, url):
+        if not url:
+            return ''
         return parse.urljoin(self.root_url, url)
 
 
