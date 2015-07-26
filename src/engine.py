@@ -1,17 +1,20 @@
 import queue
 from threading import Thread
 import requests
+from .analyzer import Analyzer
 
 __author__ = 'zz'
 
 
 _sentinel = object()
 
+
 class Engine:
-    def __init__(self, urls=None, max_thread=8):
-        assert urls
+    def __init__(self, tasks=None, max_thread=8):
+        # tasks should be a dict, eg, {url: response_gt}
+        self.url_tasks = tasks
         self.max_thread = max_thread
-        self._con_queue = queue.Queue()
+        self._task_queue = queue.Queue()
         self.result_queue = queue.Queue()
         self._thread_tasks = []
         self.is_run = False
@@ -28,13 +31,26 @@ class Engine:
 
     def run(self):
         while True:
-            data = self._con_queue.get()
-            if data is _sentinel:
-                self._con_queue.put(data)
+            url = self._task_queue.get()
+            if url is _sentinel:
+                self._task_queue.put(url)
                 break
 
-            self.fetch(data)
-#             TODO
+            r = self.fetch(url)
+            a = Analyzer(r)
+            self.add_result(a.filter_divs(response_gt=self.url_tasks[r.url]))
+            self.add_task(a.next_page())
+
+    def fetch(self, url):
+        pass
+
+    def add_result(self, results):
+        pass
+
+    def add_task(self, url):
+        pass
+
+
 
 
 
