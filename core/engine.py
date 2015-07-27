@@ -16,7 +16,7 @@ Task = namedtuple('Task', ['url', 'response_gt', 'max_page'])
 class Engine:
     def __init__(self, tasks=None, max_thread=8):
         # tasks should be a list of dict contain 'url', 'response_gt','max_page'
-        self.init_tasks = [Task(**t) for t in tasks]
+        self.init_tasks = tasks
         self.max_thread = max_thread
         self._task_queue = queue.Queue()
         self._result_cache_queue = queue.Queue()
@@ -45,15 +45,18 @@ class Engine:
 
     def start(self):
         for i in range(self.max_thread):
-            t = Thread(target=self.run)
+            t = Thread(target=self.worker)
             t.start()
             self._thread_tasks.append(t)
 
         self._running = True
 
+        for task in self.init_tasks:
+            self.add_task(**task)
 
 
-    def run(self):
+
+    def worker(self):
         try:
             while True:
                 # data is Task object
@@ -69,7 +72,7 @@ class Engine:
                 a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
                 self.add_task(a.next_page(), response_gt, max_page)
-                self._busying.pop(url)
+                self._busying.remove(url)
 
         except BaseException as e:
             # TODO: log error
