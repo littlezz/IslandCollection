@@ -28,12 +28,12 @@ class Engine:
         self._result_lock = threading.Lock()
 
     @property
-    def is_run(self):
+    def is_running(self):
         return self._running
 
     @property
     def is_busy(self):
-        return not self._busying
+        return self._busying
 
     @property
     def results(self):
