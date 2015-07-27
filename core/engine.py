@@ -37,6 +37,10 @@ class Engine:
 
     @property
     def results(self):
+        """
+        :return: collect results which already pop in get_one_result method.
+                when engine shutdown, it will return the whole results
+        """
         return self._results
 
     def start(self):
@@ -80,6 +84,12 @@ class Engine:
         for t in self._thread_tasks:
             t.join()
 
+        self._finish()
+
+    def _finish(self):
+        while self.get_one_result():
+            pass
+
     def _retrieve_task(self):
         while True:
             try:
@@ -110,8 +120,6 @@ class Engine:
         """
         :return: result or None which does not  mean the engine is stop!
         """
-        if not self.is_run:
-            return None
         try:
             result = self._result_cache_queue.get_nowait()
         except queue.Empty:
