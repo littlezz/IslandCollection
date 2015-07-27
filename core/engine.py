@@ -11,6 +11,7 @@ __author__ = 'zz'
 _sentinel = object()
 Task = namedtuple('Task', ['url', 'response_gt', 'max_page'])
 
+
 class Engine:
     def __init__(self, tasks=None, max_thread=8):
         # tasks should be a list of dict contain 'url', 'response_gt','max_page'
@@ -18,6 +19,7 @@ class Engine:
         self.max_thread = max_thread
         self._task_queue = queue.Queue()
         self._result_cache_queue = queue.Queue()
+        self._busying = ThreadSafeSet()
         self._results = []
         self._thread_tasks = []
         self._running = False
@@ -26,6 +28,10 @@ class Engine:
     @property
     def is_run(self):
         return self._running
+
+    @property
+    def is_busy(self):
+        return not self._busying.empty()
 
     @property
     def results(self):
@@ -79,7 +85,8 @@ class Engine:
             self._result_cache_queue.put(result)
 
     def add_task(self, url, response_gt, max_page):
-        pass
+        t = Task(url, response_gt, max_page)
+        self._task_queue.put(t)
 
 
 
