@@ -4,6 +4,7 @@ import requests
 from .analyzer import Analyzer
 import threading
 from collections import namedtuple
+from .structurers import ThreadSafeSet
 
 __author__ = 'zz'
 
@@ -31,7 +32,7 @@ class Engine:
 
     @property
     def is_busy(self):
-        return not self._busying.empty()
+        return not self._busying
 
     @property
     def results(self):
@@ -50,18 +51,20 @@ class Engine:
     def run(self):
         try:
             while True:
-                # data is (url, response_gt)
-                data = self._task_queue.get()
+                # data is Task object
+                data = self._retrieve_task()
                 if data is _sentinel:
                     self._task_queue.put(data)
                     return
                 else:
                     url, response_gt, max_page = data
 
+                self._busying.add(url)
                 r = self._fetch(url)
                 a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
                 self.add_task(a.next_page(), response_gt, max_page)
+                self._busying.pop(url)
 
         except BaseException as e:
             # TODO: log error
@@ -75,6 +78,20 @@ class Engine:
 
         for t in self._thread_tasks:
             t.join()
+
+    def _retrieve_task(self):
+        while True:
+            try:
+                t = self._task_queue.get(timeout=5)
+            except queue.Empty:
+                self._detect_finish()
+            else:
+                return t
+
+    def _detect_finish(self):
+        if self._task_queue.empty() and not self.is_busy:
+            self.shutdown()
+
 
     def _fetch(self, url):
         r = requests.get(url)
