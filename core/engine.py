@@ -3,16 +3,18 @@ from threading import Thread
 import requests
 from .analyzer import Analyzer
 import threading
+from collections import namedtuple
+
 __author__ = 'zz'
 
 
 _sentinel = object()
-
+Task = namedtuple('Task', ['url', 'response_gt', 'max_page'])
 
 class Engine:
     def __init__(self, tasks=None, max_thread=8):
-        # tasks should be a dict, eg, {url: response_gt}
-        self.url_tasks = tasks
+        # tasks should be a list of dict contain 'url', 'response_gt','max_page'
+        self.init_tasks = [Task(**t) for t in tasks]
         self.max_thread = max_thread
         self._task_queue = queue.Queue()
         self._result_cache_queue = queue.Queue()
@@ -48,12 +50,12 @@ class Engine:
                     self._task_queue.put(data)
                     return
                 else:
-                    url, response_gt = data
+                    url, response_gt, max_page = data
 
                 r = self._fetch(url)
-                a = Analyzer(r)
+                a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
-                self.add_task(a.next_page(), response_gt)
+                self.add_task(a.next_page(), response_gt, max_page)
 
         except BaseException as e:
             # TODO: log error
@@ -76,7 +78,7 @@ class Engine:
         for result in results:
             self._result_cache_queue.put(result)
 
-    def add_task(self, url, response_gt):
+    def add_task(self, url, response_gt, max_page):
         pass
 
 

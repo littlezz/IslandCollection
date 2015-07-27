@@ -8,9 +8,10 @@ __author__ = 'zz'
 
 class Analyzer:
 
-    def __init__(self, res):
+    def __init__(self, res, max_page):
         self.url = res.url
         self.res = res
+        self.max_page = max_page
         self.island_name = self.determine_island_name()
         self._island = self._create_island_obj()
         self.divs = self.split_page()
@@ -35,5 +36,5 @@ class Analyzer:
         return [div for div in self.divs if div.response_num>response_gt]
 
     def next_page(self):
-        return self._island.next_page()
+        return self._island.next_page(self.max_page)
 

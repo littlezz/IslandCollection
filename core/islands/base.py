@@ -96,19 +96,22 @@ class BaseIsland(metaclass=IslandMeta):
     def get_div_image(self, tip):
         raise NotImplementedError
 
-    def get_next_page_url(self):
+    def get_next_page(self):
+        """
+        return (url, page_num)
+        """
         raise NotImplementedError
 
-    def next_page_valid(self, next_page_url):
+    def next_page_valid(self, next_page_url, page_num):
         raise NotImplementedError
 
-    def next_page(self):
+    def next_page(self, max_page):
         """
         return next page url
         """
-        next_page_url = self.get_next_page_url()
-        if next_page_url and self.next_page_valid(next_page_url):
-            return next_page_url
+        url, page_num = self.get_next_page()
+        if url and page_num <= max_page and self.next_page_valid(url, page_num):
+            return url
         else:
             return None
 
@@ -142,7 +145,7 @@ class BaseIsland(metaclass=IslandMeta):
 class NextPageStaticHtmlMixin:
     _static_count_pattern = re.compile(r'(\d+)')
 
-    def get_next_page_url(self):
+    def get_next_page(self):
         path = parse.urlparse(self.current_url).path
         basename = os.path.basename(path)
         # static html basename must be d.htm(l)
@@ -157,9 +160,9 @@ class NextPageStaticHtmlMixin:
 
         # In [73]: parse.urljoin('gg/h.html','gg.html')
         # Out[73]: 'gg/gg.html'
-        return parse.urljoin(self.current_url, next_basename)
+        return parse.urljoin(self.current_url, next_basename), next_page_num
 
-    def next_page_valid(self, next_page_url):
+    def next_page_valid(self, next_page_url, page_num):
         return requests.head(next_page_url).ok
 
 
@@ -170,7 +173,7 @@ class NextPageJsonParameterMixin:
     def get_max_page(self):
         return int(self.pd['page']['size'])
 
-    def get_next_page_url(self):
+    def get_next_page(self):
         max_page = self.get_max_page()
 
 
@@ -185,8 +188,8 @@ class NextPageJsonParameterMixin:
 
         next_query = parse.urlencode({'page': count})
         url = base_url+ '?' + next_query
-        return url
+        return url, count
 
 
-    def next_page_valid(self, url):
+    def next_page_valid(self, url, page_num):
         return self._has_next_page
