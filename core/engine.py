@@ -25,6 +25,7 @@ class Engine:
         self._thread_tasks = []
         self._running = False
         self._shutdown_lock = threading.Lock()
+        self._result_lock = threading.Lock()
 
     @property
     def is_run(self):
@@ -36,7 +37,7 @@ class Engine:
 
     @property
     def results(self):
-        pass
+        return self._results
 
     def start(self):
         for i in range(self.max_thread):
@@ -104,6 +105,23 @@ class Engine:
     def add_task(self, url, response_gt, max_page):
         t = Task(url, response_gt, max_page)
         self._task_queue.put(t)
+
+    def get_one_result(self):
+        """
+        :return: result or None which does not  mean the engine is stop!
+        """
+        if not self.is_run:
+            return None
+        try:
+            result = self._result_cache_queue.get_nowait()
+        except queue.Empty:
+            result = None
+
+        if result:
+            with self._result_lock:
+                self._results.append(result)
+
+        return result
 
 
 
