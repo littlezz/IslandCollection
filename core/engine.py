@@ -25,6 +25,7 @@ class Engine:
         self._shutdown = False
         self._shutdown_lock = threading.Lock()
         self._result_lock = threading.Lock()
+        self._queue_timeout = 1
 
     @property
     def is_running(self):
@@ -101,7 +102,7 @@ class Engine:
     def _retrieve_task(self):
         while True:
             try:
-                t = self._task_queue.get(timeout=5)
+                t = self._task_queue.get(timeout=self._queue_timeout)
             except queue.Empty:
                 self._detect_finish()
             else:
