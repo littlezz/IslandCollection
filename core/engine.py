@@ -5,7 +5,6 @@ from .analyzer import Analyzer
 import threading
 from collections import namedtuple
 from .structurers import ThreadSafeSet
-
 __author__ = 'zz'
 
 
@@ -23,36 +22,42 @@ class Engine:
         self._busying = ThreadSafeSet()
         self._results = []
         self._thread_tasks = []
-        self._running = False
+        self._shutdown = False
         self._shutdown_lock = threading.Lock()
         self._result_lock = threading.Lock()
 
     @property
     def is_running(self):
-        return self._running
+        return any(t.is_alive() for t in self._thread_tasks)
 
     @property
     def is_busy(self):
-        return self._busying
+        if self._busying:
+            return True
+        else:
+            return False
 
     @property
     def results(self):
         """
         :return: collect results which already pop in get_one_result method.
-                when engine shutdown, it will return the whole results
+                when engine stop, it will return the whole results
         """
+        if not self.is_running:
+            while self.get_one_result():
+                pass
+
         return self._results
 
     def start(self):
+        for task in self.init_tasks:
+            self.add_task(**task)
+
         for i in range(self.max_thread):
             t = Thread(target=self.worker)
             t.start()
             self._thread_tasks.append(t)
 
-        self._running = True
-
-        for task in self.init_tasks:
-            self.add_task(**task)
 
 
 
@@ -67,6 +72,10 @@ class Engine:
                 else:
                     url, response_gt, max_page = data
 
+                # shutdown immediately
+                if self._shutdown:
+                    break
+
                 self._busying.add(url)
                 r = self._fetch(url)
                 a = Analyzer(r, max_page)
@@ -77,21 +86,17 @@ class Engine:
         except BaseException as e:
             # TODO: log error
             print(type(e), e)
+            raise e
 
 
     def shutdown(self):
         with self._shutdown_lock:
-            self._running = False
+            self._shutdown = True
             self._task_queue.put(_sentinel)
 
         for t in self._thread_tasks:
             t.join()
 
-        self._finish()
-
-    def _finish(self):
-        while self.get_one_result():
-            pass
 
     def _retrieve_task(self):
         while True:
@@ -104,7 +109,7 @@ class Engine:
 
     def _detect_finish(self):
         if self._task_queue.empty() and not self.is_busy:
-            self.shutdown()
+            self._task_queue.put(_sentinel)
 
 
     def _fetch(self, url):
@@ -116,6 +121,9 @@ class Engine:
             self._result_cache_queue.put(result)
 
     def add_task(self, url, response_gt, max_page):
+        if not url:
+            return
+
         t = Task(url, response_gt, max_page)
         self._task_queue.put(t)
 
