@@ -4,7 +4,7 @@ import requests
 from .analyzer import Analyzer
 import threading
 from collections import namedtuple
-from .structurers import ThreadSafeSet
+from .structurers import ThreadSafeSet, FilterableList
 __author__ = 'zz'
 
 
@@ -20,7 +20,7 @@ class Engine:
         self._task_queue = queue.Queue()
         self._result_cache_queue = queue.Queue()
         self._busying = ThreadSafeSet()
-        self._results = []
+        self._results = FilterableList()
         self._thread_tasks = []
         self._shutdown = False
         self._shutdown_lock = threading.Lock()

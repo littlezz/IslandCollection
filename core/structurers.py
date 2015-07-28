@@ -1,5 +1,5 @@
 import threading
-
+from collections import UserList
 __author__ = 'zz'
 
 
@@ -12,3 +12,13 @@ class ThreadSafeSet(set):
     def add(self, *args, **kwargs):
         with self._add_lock:
             return super().add(*args, **kwargs)
+
+
+class FilterableList(UserList):
+    def filter(self, **kwargs):
+        ret = []
+        for i in self.data:
+            if all(getattr(i, name)==value for name, value in kwargs.items()):
+                ret.append(i)
+
+        return ret
