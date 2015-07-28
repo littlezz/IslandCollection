@@ -12,6 +12,12 @@ def determine_island_name(url):
         raise IslandNotDetectError('netloc is {}'.format(netloc))
 
 
+def init_start_url(url):
+    island_name = determine_island_name(url)
+    island_class = island_class_table[island_name]
+    return island_class.init_start_url(url)
+
+
 
 class Analyzer:
 
@@ -36,3 +42,5 @@ class Analyzer:
 
     def next_page(self):
         return self._island.next_page(self.max_page)
+
+
