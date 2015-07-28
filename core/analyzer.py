@@ -3,6 +3,13 @@ from .islands import island_netloc_table, island_class_table, IslandNotDetectErr
 __author__ = 'zz'
 
 
+def determine_island_name(url):
+    netloc = parse.urlparse(url).netloc
+    for url, name in island_netloc_table.items():
+        if url == netloc:
+            return name
+    else:
+        raise IslandNotDetectError('netloc is {}'.format(netloc))
 
 
 
@@ -12,17 +19,9 @@ class Analyzer:
         self.url = res.url
         self.res = res
         self.max_page = max_page
-        self.island_name = self.determine_island_name()
+        self.island_name = determine_island_name(self.url)
         self._island = self._create_island_obj()
         self.divs = self.split_page()
-
-    def determine_island_name(self):
-        netloc = parse.urlparse(self.url).netloc
-        for url, name in island_netloc_table.items():
-            if url == netloc:
-                return name
-        else:
-            raise IslandNotDetectError('netloc is {}'.format(netloc))
 
 
     def _create_island_obj(self):
@@ -37,4 +36,3 @@ class Analyzer:
 
     def next_page(self):
         return self._island.next_page(self.max_page)
-
