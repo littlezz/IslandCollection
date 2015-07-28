@@ -20,6 +20,7 @@ class Tasks(BaseModel):
     url = CharField(max_length=255)
     response_gt = IntegerField()
     create_time = DateTimeField(default=datetime.now())
+    max_page = IntegerField()
 
 
 def connect_to_db():
