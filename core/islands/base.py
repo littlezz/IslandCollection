@@ -141,6 +141,16 @@ class BaseIsland(metaclass=IslandMeta):
             return ''
         return parse.urljoin(self.root_url, url)
 
+    def init_start_url(self, start_url=None):
+        """
+        :param start_url:
+        :return:返回初始化的url， 一般是加上分页后缀
+        """
+        if start_url is None:
+            start_url = self.current_url
+
+        return start_url
+
 
 class NextPageStaticHtmlMixin:
     _static_count_pattern = re.compile(r'(\d+)')
