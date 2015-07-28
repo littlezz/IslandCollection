@@ -36,3 +36,16 @@ class ADNMBIsland(NextPageStaticHtmlMixin, BaseIsland):
         else:
             return ''
 
+    @staticmethod
+    def init_start_url(start_url):
+        """
+        'http://h.adnmb.com/home/forum/showt/id/1.html' ->
+        'http://h.adnmb.com/home/forum/showt/id/1/page/1.html'
+        """
+        if 'page' not in start_url:
+            base, suffix = start_url.rsplit('.', 1)
+            start_url = base + '/page/1' + '.' + suffix
+
+        return start_url
+
+
