@@ -1,4 +1,5 @@
-from .base import BaseIsland, NextPageJsonParameterMixin
+from .base import BaseIsland
+from core.islands.mixins import NextPageJsonParameterMixin
 from urllib import parse
 __author__ = 'zz'
 

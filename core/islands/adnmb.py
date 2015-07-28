@@ -1,4 +1,5 @@
-from core.islands.base import BaseIsland, NextPageStaticHtmlMixin
+from core.islands.base import BaseIsland
+from core.islands.mixins import NextPageStaticHtmlMixin
 
 __author__ = 'zz'
 
