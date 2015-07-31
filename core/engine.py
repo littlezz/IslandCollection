@@ -15,7 +15,7 @@ Task = namedtuple('Task', ['url', 'response_gt', 'max_page'])
 class Engine:
     def __init__(self, tasks=None, max_thread=8):
         # tasks should be a list of dict contain 'url', 'response_gt','max_page'
-        self.init_tasks = tasks
+        self._init_tasks(tasks)
         self.max_thread = max_thread
         self._task_queue = queue.Queue()
         self._result_cache_queue = queue.Queue()
@@ -49,6 +49,21 @@ class Engine:
                 pass
 
         return self._results
+
+
+    def _init_tasks(self, tasks):
+        self.init_tasks = []
+        simple  = tasks[0]
+
+        if isinstance(simple, Task):
+            for task in tasks:
+                self.init_tasks.append(task._asdict())
+
+        else:
+            for task in tasks:
+                self.init_tasks.append(task)
+
+
 
     def start(self):
         for task in self.init_tasks:
