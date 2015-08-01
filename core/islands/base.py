@@ -57,6 +57,16 @@ class BaseIsland(metaclass=IslandMeta):
         self.current_url = current_url
 
     @property
+    def current_page_url(self):
+        url = getattr(self, '_current_page_url', self.current_url)
+        return url
+
+    @current_page_url.setter
+    def current_page_url(self, value):
+        self._current_page_url = value
+
+
+    @property
     def root_url(self):
         return parse.urlunsplit((self._island_scheme, self._island_netloc, '', '', ''))
 
@@ -105,10 +115,13 @@ class BaseIsland(metaclass=IslandMeta):
     def next_page_valid(self, next_page_url, page_num):
         raise NotImplementedError
 
-    def next_page(self, max_page):
+    def next_page(self, max_page, current_page_url=None):
         """
         return next page url
         """
+        if current_page_url:
+            self.current_page_url = current_page_url
+
         url, page_num = self.get_next_page()
         if url and page_num <= max_page and self.next_page_valid(url, page_num):
             return url
