@@ -64,6 +64,26 @@ class Engine:
                 self.init_tasks.append(task)
 
 
+    def set_init_tasks(self, tasks):
+        self._reset()
+        self._init_tasks(tasks)
+
+    def _reset(self):
+        """
+        reset the engine, clear the inter queue
+        """
+        if self.is_running:
+            self.shutdown()
+
+        self._task_queue = queue.Queue()
+        self._result_cache_queue = queue.Queue()
+        self._busying = ThreadSafeSet()
+        self._results = FilterableList()
+        self._thread_tasks = []
+        self._shutdown = False
+
+
+
 
     def start(self):
         for task in self.init_tasks:
