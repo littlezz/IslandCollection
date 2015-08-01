@@ -17,6 +17,9 @@ class Engine:
         # tasks should be a list of dict contain 'url', 'response_gt','max_page'
         self._init_tasks(tasks)
         self.max_thread = max_thread
+        self._init()
+
+    def _init(self):
         self._task_queue = queue.Queue()
         self._result_cache_queue = queue.Queue()
         self._busying = ThreadSafeSet()
@@ -26,6 +29,7 @@ class Engine:
         self._shutdown_lock = threading.Lock()
         self._result_lock = threading.Lock()
         self._queue_timeout = 1
+        self._pre_work_running = False
 
     @property
     def is_running(self):
@@ -75,12 +79,7 @@ class Engine:
         if self.is_running:
             self.shutdown()
 
-        self._task_queue = queue.Queue()
-        self._result_cache_queue = queue.Queue()
-        self._busying = ThreadSafeSet()
-        self._results = FilterableList()
-        self._thread_tasks = []
-        self._shutdown = False
+        self._init()
 
 
 
@@ -89,9 +88,13 @@ class Engine:
         # for task in self.init_tasks:
         #     self.add_task(**task)
 
+        self._pre_work_running = True
+
         t = threading.Thread(target=self._generate_tasks)
         t.start()
         self._thread_tasks.append(t)
+
+        self._pre_work_running = False
 
         for i in range(self.max_thread):
             t = Thread(target=self.worker)
@@ -104,17 +107,19 @@ class Engine:
             url = task['url']
             response_gt = task['response_gt']
             max_page = task['max_page']
+            # add the init task immediately to avoid main worker stop
+            self.add_task(url, response_gt, max_page)
             r = self._fetch(url)
             a = Analyzer(r, max_page)
             while True:
                 if self._shutdown:
                     return
 
-                self.add_task(url, response_gt, max_page)
                 url = a.next_page(current_page_url=url)
                 if not url:
                     break
 
+                self.add_task(url, response_gt, max_page)
 
 
     def worker(self):
@@ -164,7 +169,7 @@ class Engine:
                 return t
 
     def _detect_finish(self):
-        if self._task_queue.empty() and not self.is_busy:
+        if self._task_queue.empty() and not self.is_busy and not self._pre_work_running:
             self._task_queue.put(_sentinel)
 
 
