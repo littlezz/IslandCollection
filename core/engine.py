@@ -86,14 +86,34 @@ class Engine:
 
 
     def start(self):
-        for task in self.init_tasks:
-            self.add_task(**task)
+        # for task in self.init_tasks:
+        #     self.add_task(**task)
+
+        t = threading.Thread(target=self._generate_tasks)
+        t.start()
+        self._thread_tasks.append(t)
 
         for i in range(self.max_thread):
             t = Thread(target=self.worker)
             t.start()
             self._thread_tasks.append(t)
 
+
+    def _generate_tasks(self):
+        for task in self.init_tasks:
+            url = task['url']
+            response_gt = task['response_gt']
+            max_page = task['max_page']
+            r = self._fetch(url)
+            a = Analyzer(r, max_page)
+            while True:
+                if self._shutdown:
+                    return
+
+                self.add_task(url, response_gt, max_page)
+                url = a.next_page(current_page_url=url)
+                if not url:
+                    break
 
 
 
@@ -116,7 +136,7 @@ class Engine:
                 r = self._fetch(url)
                 a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
-                self.add_task(a.next_page(), response_gt, max_page)
+                # self.add_task(a.next_page(), response_gt, max_page)
                 self._busying.remove(url)
 
         except BaseException as e:

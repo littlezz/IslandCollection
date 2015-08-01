@@ -40,7 +40,7 @@ class Analyzer:
     def filter_divs(self, response_gt, *args):
         return [div for div in self.divs if div.response_num>response_gt]
 
-    def next_page(self):
-        return self._island.next_page(self.max_page)
+    def next_page(self, current_page_url=None):
+        return self._island.next_page(self.max_page, current_page_url)
 
 
