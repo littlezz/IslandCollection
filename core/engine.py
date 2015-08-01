@@ -135,11 +135,9 @@ class Engine:
                 if self._shutdown:
                     break
 
-                self._busying.add(url)
                 r = self._fetch(url)
                 a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
-                self._busying.remove(url)
 
         except BaseException as e:
             # TODO: log error
@@ -171,7 +169,9 @@ class Engine:
 
 
     def _fetch(self, url):
+        self._busying.add(url)
         r = requests.get(url)
+        self._busying.remove(url)
         return r
 
     def _add_result(self, results):
