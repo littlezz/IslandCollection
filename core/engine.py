@@ -74,7 +74,7 @@ class Engine:
 
     def _reset(self):
         """
-        reset the engine, clear the inter queue
+        reset the engine, re init the engine
         """
         if self.is_running:
             self.shutdown()
@@ -85,8 +85,6 @@ class Engine:
 
 
     def start(self):
-        # for task in self.init_tasks:
-        #     self.add_task(**task)
 
         self._pre_work_running = True
 
@@ -141,7 +139,6 @@ class Engine:
                 r = self._fetch(url)
                 a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
-                # self.add_task(a.next_page(), response_gt, max_page)
                 self._busying.remove(url)
 
         except BaseException as e:
