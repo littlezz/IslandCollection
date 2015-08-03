@@ -1,7 +1,7 @@
 import queue
 from threading import Thread
 import requests
-from .analyzer import Analyzer
+from .analyzer import Analyzer, init_start_url
 import threading
 from collections import namedtuple
 from .structurers import ThreadSafeSet, FilterableList
@@ -66,6 +66,9 @@ class Engine:
         else:
             for task in tasks:
                 self.init_tasks.append(task)
+
+        for task in self.init_tasks:
+            task['url'] = init_start_url(task['url'])
 
 
     def set_init_tasks(self, tasks):
@@ -134,11 +137,11 @@ class Engine:
                 # shutdown immediately
                 if self._shutdown:
                     break
-
+                self._busying.add(url)
                 r = self._fetch(url)
                 a = Analyzer(r, max_page)
                 self._add_result(a.filter_divs(response_gt=response_gt))
-
+                self._busying.remove(url)
         except BaseException as e:
             # TODO: log error
             print(type(e), e)
@@ -169,9 +172,7 @@ class Engine:
 
 
     def _fetch(self, url):
-        self._busying.add(url)
         r = requests.get(url)
-        self._busying.remove(url)
         return r
 
     def _add_result(self, results):

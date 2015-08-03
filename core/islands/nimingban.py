@@ -27,3 +27,9 @@ class NiMingBanIsland(NextPageJsonParameterMixin, BaseIsland):
     def get_div_image(self, tip):
         return tip['image']
 
+    @staticmethod
+    def init_start_url(start_url):
+        if '.json' not in start_url:
+            parts = parse.urlsplit(start_url)
+            path = parts.path + '.json'
+            return parse.urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
