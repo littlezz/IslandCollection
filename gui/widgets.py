@@ -3,20 +3,25 @@ import tkinter
 __author__ = 'zz'
 
 
-class CheckButton(ttk.Checkbutton):
+class VarGetMixin:
+    def get(self):
+        return self.var.get()
+
+
+class CheckButton(VarGetMixin, ttk.Checkbutton):
     def __init__(self, master, **kwargs):
         self.var = tkinter.IntVar()
         kwargs.update(variable=self.var)
         super().__init__(master, **kwargs)
 
-    def get(self):
-        return self.var.get()
 
-class Entry(ttk.Entry):
+class Entry(VarGetMixin, ttk.Entry):
     def __init__(self, master, **kwargs):
         self.var = tkinter.StringVar()
         kwargs.update(textvariable=self.var)
         super().__init__(master, **kwargs)
+
+
 
 
 class UrlSelectColumnFrame(ttk.Frame):
