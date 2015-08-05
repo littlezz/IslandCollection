@@ -5,9 +5,14 @@ __author__ = 'zz'
 
 class CheckButton(ttk.Checkbutton):
     def __init__(self, master, **kwargs):
-        var = tkinter.IntVar()
-        kwargs.update(variable=var)
+        self.var = tkinter.IntVar()
+        kwargs.update(variable=self.var)
         super().__init__(master, **kwargs)
+
+    def get(self):
+        return self.var.get()
+
+
 
 
 class UrlSelectColumnFrame(ttk.Frame):
