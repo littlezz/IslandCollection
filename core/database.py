@@ -21,6 +21,7 @@ class Tasks(BaseModel):
     response_gt = IntegerField()
     create_time = DateTimeField(default=datetime.now())
     max_page = IntegerField()
+    is_using = IntegerField(default=1)
 
 
 def connect_to_db():
