@@ -12,20 +12,23 @@ class CheckButton(ttk.Checkbutton):
     def get(self):
         return self.var.get()
 
-
+class Entry(ttk.Entry):
+    def __init__(self, master, **kwargs):
+        self.var = tkinter.StringVar()
+        kwargs.update(textvariable=self.var)
+        super().__init__(master, **kwargs)
 
 
 class UrlSelectColumnFrame(ttk.Frame):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
         self.check_button = CheckButton(self)
-        self.url_text = ttk.Entry(self, text='url')
-        self.response_num_text = ttk.Entry(self, text='response')
-        self.max_page_text = ttk.Entry(self, text='max page')
+        self.url_text = Entry(self, text='url')
+        self.response_num_text = Entry(self, text='response')
+        self.max_page_text = Entry(self, text='max page')
         self.delete_button = ttk.Button(self, text='Delete')
 
         self.check_button.grid(column=0, row=0)
-        self.check_button.state(['!disabled'])
         self.url_text.grid(column=1, row=0)
         self.response_num_text.grid(column=2, row=0)
         self.max_page_text.grid(column=3, row=0)
