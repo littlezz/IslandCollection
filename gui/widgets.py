@@ -22,15 +22,20 @@ class Entry(VarGetMixin, ttk.Entry):
         super().__init__(master, **kwargs)
 
 
+class NumberEntry(VarGetMixin, ttk.Entry):
+    def __init__(self, master, value=None, **kwargs):
+        self.var = tkinter.IntVar(value=value)
+        kwargs.update(textvariable=self.var)
+        super().__init__(master, **kwargs)
 
 
 class UrlSelectColumnFrame(ttk.Frame):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
         self.check_button = CheckButton(self)
-        self.url_text = Entry(self, text='url')
-        self.response_num_text = Entry(self, text='response')
-        self.max_page_text = Entry(self, text='max page')
+        self.url_text = Entry(self)
+        self.response_num_text = NumberEntry(self)
+        self.max_page_text = NumberEntry(self)
         self.delete_button = ttk.Button(self, text='Delete')
 
         self.check_button.grid(column=0, row=0)
