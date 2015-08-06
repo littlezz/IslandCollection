@@ -10,9 +10,9 @@ class UrlSelectColumnFrame(ttk.Frame):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
         self.check_button = CheckButton(self)
-        self.url_text = Entry(self)
-        self.response_num_text = NumberEntry(self)
-        self.max_page_text = NumberEntry(self)
+        self.url_text = Entry(self, width=50)
+        self.response_num_text = NumberEntry(self, width=5)
+        self.max_page_text = NumberEntry(self, width=5)
         self.delete_button = ttk.Button(self, text='Delete', command=self.destroy)
 
         self.check_button.grid(column=0, row=0)
