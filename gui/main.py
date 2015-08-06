@@ -1,15 +1,17 @@
 from tkinter import *
 from tkinter import ttk
-from .widgets import UrlSelectColumnFrame
+from gui.url_set_notebook import UrlSelectColumnFrame
+from .url_set_notebook import NoteFrame
+
 __author__ = 'zz'
+
+
+
 
 root = Tk()
 root.title('Island Collections')
-
-main_frame = ttk.Frame(root)
-main_frame.grid(column=0, row=0)
-for i in range(10):
-    u = UrlSelectColumnFrame(main_frame)
-    u.grid(column=0, row=i)
+root.minsize(width=666, height=666)
+mainframe = NoteFrame(root)
+mainframe.grid(column=0, row=0)
 
 root.mainloop()

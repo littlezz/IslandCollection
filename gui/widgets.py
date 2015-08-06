@@ -9,8 +9,8 @@ class VarGetMixin:
 
 
 class CheckButton(VarGetMixin, ttk.Checkbutton):
-    def __init__(self, master, **kwargs):
-        self.var = tkinter.IntVar()
+    def __init__(self, master, value=1, **kwargs):
+        self.var = tkinter.IntVar(value=value)
         kwargs.update(variable=self.var)
         super().__init__(master, **kwargs)
 
@@ -42,21 +42,5 @@ class NumberEntry(VarGetMixin, ttk.Entry):
         return False
 
 
-
-
-class UrlSelectColumnFrame(ttk.Frame):
-    def __init__(self, master=None, **kw):
-        super().__init__(master, **kw)
-        self.check_button = CheckButton(self)
-        self.url_text = Entry(self)
-        self.response_num_text = NumberEntry(self)
-        self.max_page_text = NumberEntry(self)
-        self.delete_button = ttk.Button(self, text='Delete')
-
-        self.check_button.grid(column=0, row=0)
-        self.url_text.grid(column=1, row=0)
-        self.response_num_text.grid(column=2, row=0)
-        self.max_page_text.grid(column=3, row=0)
-        self.delete_button.grid(column=4, row=0)
 
 
