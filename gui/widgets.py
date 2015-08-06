@@ -24,9 +24,24 @@ class Entry(VarGetMixin, ttk.Entry):
 
 class NumberEntry(VarGetMixin, ttk.Entry):
     def __init__(self, master, value=None, **kwargs):
-        self.var = tkinter.IntVar(value=value)
-        kwargs.update(textvariable=self.var)
         super().__init__(master, **kwargs)
+        self.var = tkinter.IntVar(value=value)
+        vcmd = (self.register(self.validating), '%S')
+
+        cf = dict()
+        cf.update(textvariable=self.var)
+        cf.update(validatecommand=vcmd)
+        cf.update(validate='key')
+        self.configure(**cf)
+
+
+    def validating(self, text):
+        allow = '0123456789'
+        if all(c in allow for c in text):
+            return True
+        return False
+
+
 
 
 class UrlSelectColumnFrame(ttk.Frame):
