@@ -3,10 +3,10 @@ from .widgets import BaseFrame
 __author__ = 'zz'
 
 
-class DummyFrame(BaseFrame):
+class DummyFrame:
     pass
 
-dummy = BaseFrame()
+dummy = DummyFrame()
 
 class BaseMainFrameLayout(BaseFrame):
 

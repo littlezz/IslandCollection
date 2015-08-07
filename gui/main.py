@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-from gui.first.frames import NoteFrame
+from gui.first.frames import MainFrame
 
 __author__ = 'zz'
 
@@ -12,11 +12,11 @@ def next_frame(master):
 
 root = Tk()
 root.title('Island Collections')
-root.minsize(width=666, height=666)
+# root.minsize(width=666, height=666)
 
-mainframe = NoteFrame(root)
+mainframe = MainFrame(root)
 mainframe.grid(column=0, row=0)
 
-ttk.Button(text='next', command=lambda : next_frame(mainframe)).grid(column=1, row=1)
+# ttk.Button(text='next', command=lambda : next_frame(mainframe)).grid(column=1, row=1)
 
 root.mainloop()

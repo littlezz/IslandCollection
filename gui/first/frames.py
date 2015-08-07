@@ -35,7 +35,7 @@ class FootFrame(ttk.Frame):
 
 class SideFrame(BaseFrame):
     def _init(self):
-        self.add_button = ttk.Button(self, text='+', command=self.master.add_content_row)
+        self.add_button = ttk.Button(self, text='+')
         self.add_button.grid(column=0, row=0)
 
 
