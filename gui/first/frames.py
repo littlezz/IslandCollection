@@ -1,6 +1,6 @@
 from tkinter import ttk
 from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame
-
+from gui.layouts import BaseMainFrameLayout
 __author__ = 'zz'
 
 
@@ -22,7 +22,7 @@ class UrlSelectColumnFrame(ttk.Frame):
         self.delete_button.grid(column=4, row=0)
 
 
-class FeetFrame(ttk.Frame):
+class FootFrame(ttk.Frame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.button = ttk.Button(self, text='Start!')
@@ -41,3 +41,20 @@ class SideFrame(BaseFrame):
 
 class ContentFrame(BaseFrame):
     def _init(self):
+        self.row_num = 0
+
+    def add_content_row(self):
+        row = UrlSelectColumnFrame(self)
+        row.grid(column=0, row=self.row_num)
+        self.row_num += 1
+
+
+class MainFrame(BaseMainFrameLayout):
+
+    def _init(self):
+        self.content_frame = ContentFrame(self)
+        self.side_frame = SideFrame(self)
+        self.foot_frame = FootFrame(self)
+
+        self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
+
