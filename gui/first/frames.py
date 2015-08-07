@@ -1,5 +1,5 @@
 from tkinter import ttk
-from gui.widgets import CheckButton, Entry, NumberEntry
+from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame
 
 __author__ = 'zz'
 
@@ -22,18 +22,22 @@ class UrlSelectColumnFrame(ttk.Frame):
         self.delete_button.grid(column=4, row=0)
 
 
-# TODO:fuck
-class NoteFrame(ttk.Frame):
+class FeetFrame(ttk.Frame):
     def __init__(self, master, **kwargs):
-        self.tot = 1
         super().__init__(master, **kwargs)
-        self._f = ttk.Frame(self, width=500)
-        self._f.grid(column=0, row=1, columnspan=5)
-        ttk.Frame(self,width=500).grid(column=0, row=0, columnspan=5)
-        add_button = ttk.Button(self, text='add', command=self.add_child)
-        add_button.grid(column=6, row=0, sticky='NE')
+        self.button = ttk.Button(self, text='Start!')
+        self.button.grid(column=0, row=0)
 
-    def add_child(self):
-        u = UrlSelectColumnFrame(self._f)
-        u.grid(column=0, row=self.tot)
-        self.tot += 1
+    def set_button_command(self, command):
+        self.button.configure(command=command)
+
+
+
+class SideFrame(BaseFrame):
+    def _init(self):
+        self.add_button = ttk.Button(self, text='+', command=self.master.add_content_row)
+        self.add_button.grid(column=0, row=0)
+
+
+class ContentFrame(BaseFrame):
+    def _init(self):

@@ -30,3 +30,15 @@ def connect_to_db():
 
 
 
+
+def get_all():
+    return Tasks.select().dicts()
+
+def delete_by_id(id):
+    q = Tasks.select().where(Tasks.id==id)
+    if q.exists():
+        obj = q.get()
+        obj.delete_instance()
+
+
+

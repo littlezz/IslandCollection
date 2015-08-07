@@ -43,4 +43,10 @@ class NumberEntry(VarGetMixin, ttk.Entry):
 
 
 
+class BaseFrame(ttk.Frame):
+    def __init__(self, master=None, **kwargs):
+        super().__init__(master, **kwargs)
+        self._init()
 
+    def _init(self):
+        raise NotImplementedError
