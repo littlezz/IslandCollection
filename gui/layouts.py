@@ -17,6 +17,7 @@ class BaseMainFrameLayout(BaseFrame):
 
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
+        self.configure(padding='5 5 5 5')
         self.layout()
 
 
@@ -27,6 +28,7 @@ class BaseMainFrameLayout(BaseFrame):
     def layout(self):
         self.assert_dummy()
 
-        self.content_frame.grid(column=0, row=0, rowspan=11)
-        self.side_frame.grid(column=1, row=0, rowspan=3)
-        self.foot_frame.grid(column=0, row=11)
+        self.content_frame.configure(padding='5 5 5 5')
+        self.content_frame.grid(column=0, row=0)
+        self.side_frame.grid(column=1, row=0, sticky='NW')
+        self.foot_frame.grid(column=0, row=1)
