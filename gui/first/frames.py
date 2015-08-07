@@ -21,6 +21,14 @@ class UrlSelectColumnFrame(ttk.Frame):
         self.max_page_text.grid(column=3, row=0)
         self.delete_button.grid(column=4, row=0)
 
+    def get_as_dict(self):
+        ret = {
+            'url': self.url_text.get(),
+            'response_gt': self.response_num_text.get(),
+            'max_page': self.max_page_text.get(),
+            'is_using': self.check_button.get(),
+        }
+        return ret
 
 class FootFrame(ttk.Frame):
     def __init__(self, master, **kwargs):
@@ -37,6 +45,12 @@ class SideFrame(BaseFrame):
     def _init(self):
         self.add_button = ttk.Button(self, text='+')
         self.add_button.grid(column=0, row=0)
+        self.save_button = ttk.Button(self, text='save', command=self.database_save)
+        self.save_button.grid(column=0, row=1)
+
+    def database_save(self):
+        # TODO: database interact
+        pass
 
 
 class ContentFrame(BaseFrame):
