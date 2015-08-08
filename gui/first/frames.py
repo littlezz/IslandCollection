@@ -1,7 +1,8 @@
 from tkinter import ttk
-from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame
+from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, Label
 from gui.layouts import BaseMainFrameLayout
 from core import database
+from functools import partial
 __author__ = 'zz'
 
 
@@ -53,7 +54,15 @@ class SideFrame(BaseFrame):
         self.save_button = ttk.Button(self, text='save')
         self.save_button.grid(column=0, row=1)
 
-        self.info_label = ttk.Label()
+        self.info_label = Label(self)
+        self.info_label.grid(column=0, row=2)
+
+    def set_info(self, info):
+        if not info:
+            info = 'fail'
+        else:
+            info='successful!'
+        self.info_label.set(info)
 
 
 
@@ -79,11 +88,10 @@ class ContentFrame(BaseFrame):
         for t in tasks:
             # TODO:fix this
             t.pop('create_time')
-            t.pop('id')
             self.add_content_row(**t)
 
 
-    def save(self):
+    def save(self, send_info):
         """
         save content info
         :return:
@@ -92,7 +100,9 @@ class ContentFrame(BaseFrame):
             task = row.get_as_dict()
             is_success = database.create_or_update_data(task)
             # TODO: resolve not success
-
+            send_info(is_success)
+            if not is_success:
+                break
 
 
 class MainFrame(BaseMainFrameLayout):
@@ -103,4 +113,7 @@ class MainFrame(BaseMainFrameLayout):
         self.foot_frame = FootFrame(self)
 
         self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
+
+        _save_send_info = partial(self.content_frame.save, send_info=self.side_frame.set_info)
+        self.side_frame.save_button.configure(command=_save_send_info)
 
