@@ -16,7 +16,7 @@ class UrlSelectColumnFrame(ttk.Frame):
         self.url_text = Entry(self, width=50, value=url)
         self.response_num_text = NumberEntry(self, width=5, value=response_gt)
         self.max_page_text = NumberEntry(self, width=5, value=max_page)
-        self.delete_button = ttk.Button(self, text='Delete', command=self.destroy)
+        self.delete_button = ttk.Button(self, text='Delete', command=self.delete)
 
         self.check_button.grid(column=0, row=0)
         self.url_text.grid(column=1, row=0)
@@ -34,6 +34,9 @@ class UrlSelectColumnFrame(ttk.Frame):
         }
         return ret
 
+    def delete(self):
+        database.delete_by_id(self.database_id)
+        self.destroy()
 
 
 class FootFrame(ttk.Frame):
