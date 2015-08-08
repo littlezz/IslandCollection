@@ -8,6 +8,11 @@ class VarGetMixin:
         return self.var.get()
 
 
+class VarSetMixin:
+   def set(self, value):
+       self.var.set(value=value)
+
+
 class CheckButton(VarGetMixin, ttk.Checkbutton):
     def __init__(self, master, value=1, **kwargs):
         self.var = tkinter.IntVar(value=value)
@@ -40,6 +45,13 @@ class NumberEntry(VarGetMixin, ttk.Entry):
         if all(c in allow for c in text):
             return True
         return False
+
+
+class Label(VarGetMixin, VarSetMixin, ttk.Label):
+    def __init__(self, master, value=None, **kwargs):
+        self.var = tkinter.StringVar(value=value)
+        kwargs.update(textvariable=self.var)
+        super().__init__(master, **kwargs)
 
 
 

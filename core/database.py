@@ -24,6 +24,7 @@ class Tasks(BaseModel):
     is_using = IntegerField(default=1)
 
 
+
 def connect_to_db():
     db.connect()
     db.create_tables([Tasks], True)
@@ -41,5 +42,14 @@ def delete_by_id(id):
         obj = q.get()
         obj.delete_instance()
 
+
+def create_or_update_data(data):
+    id = data.pop('id')
+    obj, created = Tasks.get_or_create(id=id, defaults=data)
+    if not created:
+        is_success = Tasks.update(**data).where(Tasks.id==id).execute()
+        return is_success
+    else:
+        return created
 
 

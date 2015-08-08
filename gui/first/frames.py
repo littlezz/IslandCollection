@@ -1,15 +1,16 @@
 from tkinter import ttk
 from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame
 from gui.layouts import BaseMainFrameLayout
-from core.database import get_all
+from core import database
 __author__ = 'zz'
 
 
 
 
 class UrlSelectColumnFrame(ttk.Frame):
-    def __init__(self, master=None, url='', response_gt=None, max_page=None, is_using=True, **kw):
+    def __init__(self, master=None, id=None, url='', response_gt=None, max_page=None, is_using=True, **kw):
         super().__init__(master, **kw)
+        self.database_id = id
         self.check_button = CheckButton(self, value=is_using)
         self.url_text = Entry(self, width=50, value=url)
         self.response_num_text = NumberEntry(self, width=5, value=response_gt)
@@ -28,6 +29,7 @@ class UrlSelectColumnFrame(ttk.Frame):
             'response_gt': self.response_num_text.get(),
             'max_page': self.max_page_text.get(),
             'is_using': self.check_button.get(),
+            'id':self.database_id,
         }
         return ret
 
@@ -48,12 +50,12 @@ class SideFrame(BaseFrame):
     def _init(self):
         self.add_button = ttk.Button(self, text='+')
         self.add_button.grid(column=0, row=0)
-        self.save_button = ttk.Button(self, text='save', command=self.database_save)
+        self.save_button = ttk.Button(self, text='save')
         self.save_button.grid(column=0, row=1)
 
-    def database_save(self):
-        # TODO: database interact
-        pass
+        self.info_label = ttk.Label()
+
+
 
 
 class ContentFrame(BaseFrame):
@@ -72,13 +74,25 @@ class ContentFrame(BaseFrame):
         :return:None
         """
 
-        tasks = get_all()
+        tasks = database.get_all()
 
         for t in tasks:
             # TODO:fix this
             t.pop('create_time')
             t.pop('id')
             self.add_content_row(**t)
+
+
+    def save(self):
+        """
+        save content info
+        :return:
+        """
+        for _, row in self.children.items():
+            task = row.get_as_dict()
+            is_success = database.create_or_update_data(task)
+            # TODO: resolve not success
+
 
 
 class MainFrame(BaseMainFrameLayout):
