@@ -1,18 +1,19 @@
 from tkinter import ttk
 from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame
 from gui.layouts import BaseMainFrameLayout
+from core.database import get_all
 __author__ = 'zz'
 
 
 
 
 class UrlSelectColumnFrame(ttk.Frame):
-    def __init__(self, master=None, **kw):
+    def __init__(self, master=None, url='', response_gt=None, max_page=None, is_using=True, **kw):
         super().__init__(master, **kw)
-        self.check_button = CheckButton(self)
-        self.url_text = Entry(self, width=50)
-        self.response_num_text = NumberEntry(self, width=5)
-        self.max_page_text = NumberEntry(self, width=5)
+        self.check_button = CheckButton(self, value=is_using)
+        self.url_text = Entry(self, width=50, value=url)
+        self.response_num_text = NumberEntry(self, width=5, value=response_gt)
+        self.max_page_text = NumberEntry(self, width=5, value=max_page)
         self.delete_button = ttk.Button(self, text='Delete', command=self.destroy)
 
         self.check_button.grid(column=0, row=0)
@@ -29,6 +30,8 @@ class UrlSelectColumnFrame(ttk.Frame):
             'is_using': self.check_button.get(),
         }
         return ret
+
+
 
 class FootFrame(ttk.Frame):
     def __init__(self, master, **kwargs):
@@ -56,11 +59,26 @@ class SideFrame(BaseFrame):
 class ContentFrame(BaseFrame):
     def _init(self):
         self.row_num = 0
+        self.init_list()
 
-    def add_content_row(self):
-        row = UrlSelectColumnFrame(self)
+    def add_content_row(self, **kwargs):
+        row = UrlSelectColumnFrame(self, **kwargs)
         row.grid(column=0, row=self.row_num)
         self.row_num += 1
+
+    def init_list(self):
+        """
+        show database records
+        :return:None
+        """
+
+        tasks = get_all()
+
+        for t in tasks:
+            # TODO:fix this
+            t.pop('create_time')
+            t.pop('id')
+            self.add_content_row(**t)
 
 
 class MainFrame(BaseMainFrameLayout):

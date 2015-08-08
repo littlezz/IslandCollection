@@ -16,8 +16,8 @@ class CheckButton(VarGetMixin, ttk.Checkbutton):
 
 
 class Entry(VarGetMixin, ttk.Entry):
-    def __init__(self, master, **kwargs):
-        self.var = tkinter.StringVar()
+    def __init__(self, master, value='', **kwargs):
+        self.var = tkinter.StringVar(value=value)
         kwargs.update(textvariable=self.var)
         super().__init__(master, **kwargs)
 
