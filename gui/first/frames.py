@@ -1,7 +1,8 @@
 from tkinter import ttk
-from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, Label, Button
+from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, InfoLabel, Button
 from gui.layouts import BaseMainFrameLayout
 from core import database
+from functools import partial
 __author__ = 'zz'
 
 
@@ -59,12 +60,14 @@ class FootFrame(ttk.Frame):
 class SideFrame(BaseFrame):
     def _init(self):
         self.add_button = ttk.Button(self, text='+')
-        self.add_button.grid(column=0, row=0)
+        self.add_button.grid(column=0, row=0, sticky='NW')
         self.save_button = ttk.Button(self, text='save')
-        self.save_button.grid(column=0, row=1)
+        self.save_button.grid(column=0, row=1, sticky='NW')
 
-        self.info_label = Label(self)
+        self.info_label = InfoLabel(self, width=20, wraplength=150)
         self.info_label.grid(column=0, row=2)
+
+        # ttk.Frame(self,width=100).grid(column=0, row=3)
 
     def set_info(self, info):
 
@@ -75,7 +78,17 @@ class SideFrame(BaseFrame):
 
 class ContentFrame(BaseFrame):
     def _init(self):
-        self.row_num = 0
+        self.column_names = UrlSelectColumnFrame(self)
+        self.column_names.grid(column=0, row=0)
+
+        [w.destroy() for w in self.column_names.winfo_children()]
+
+        _Label = partial(ttk.Label, self.column_names)
+        _Label(text='URL', width=20).grid(column=0, row=0, sticky='W')
+        _Label(text='Response Number').grid(column=1, row=0)
+        _Label(text='Max Page').grid(column=2, row=0)
+
+        self.row_num = 1
         self.init_list()
 
     def add_content_row(self, **kwargs):
@@ -126,7 +139,6 @@ class MainFrame(BaseMainFrameLayout):
         self.foot_frame = FootFrame(self)
 
         self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
-
         self.side_frame.save_button.configure(command=self.content_frame.save)
 
     def set_info(self, info):

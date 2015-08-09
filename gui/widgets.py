@@ -65,7 +65,7 @@ class NumberEntry(HelpTextMixin, VarGetSetMixin, ttk.Entry):
         return False
 
 
-class Label(HelpTextMixin, StringVarMixin, ttk.Label):
+class InfoLabel(HelpTextMixin, StringVarMixin, ttk.Label):
     pass
 
 
