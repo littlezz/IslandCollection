@@ -3,14 +3,27 @@ import tkinter
 __author__ = 'zz'
 
 
-class VarGetMixin:
+class VarGetSetMixin:
     def get(self):
         return self.var.get()
 
-
-class VarSetMixin:
-   def set(self, value):
+    def set(self, value):
        self.var.set(value=value)
+
+
+# class IntVarMixin(BaseVarMixin):
+#     def __init__(self, *args, **kwargs):
+#         value = kwargs.pop('value', None)
+#         self.var = tkinter.IntVar(value=value)
+#         super().__init__(*args, **kwargs)
+
+
+class StringVarMixin(VarGetSetMixin):
+    def __init__(self, *args, **kwargs):
+        value = kwargs.pop('value', None)
+        self.var = tkinter.StringVar(value=value)
+        kwargs.update(textvariable=self.var)
+        super().__init__(*args, **kwargs)
 
 
 class HelpTextMixin:
@@ -19,21 +32,25 @@ class HelpTextMixin:
         super().__init__(*args, **kwargs)
 
 
-class CheckButton(HelpTextMixin, VarGetMixin, ttk.Checkbutton):
+
+
+
+class CheckButton(HelpTextMixin, VarGetSetMixin, ttk.Checkbutton):
     def __init__(self, master, value=1, **kwargs):
         self.var = tkinter.IntVar(value=value)
         kwargs.update(variable=self.var)
         super().__init__(master, **kwargs)
 
 
-class Entry(HelpTextMixin, VarGetMixin, ttk.Entry):
-    def __init__(self, master, value='', **kwargs):
-        self.var = tkinter.StringVar(value=value)
-        kwargs.update(textvariable=self.var)
-        super().__init__(master, **kwargs)
+class Button(HelpTextMixin, ttk.Button):
+    pass
 
 
-class NumberEntry(HelpTextMixin, VarGetMixin, ttk.Entry):
+class Entry(HelpTextMixin, StringVarMixin, ttk.Entry):
+    pass
+
+
+class NumberEntry(HelpTextMixin, VarGetSetMixin, ttk.Entry):
     def __init__(self, master, value=None, **kwargs):
         super().__init__(master, **kwargs)
         self.var = tkinter.IntVar(value=value)
@@ -53,12 +70,8 @@ class NumberEntry(HelpTextMixin, VarGetMixin, ttk.Entry):
         return False
 
 
-class Label(HelpTextMixin, VarGetMixin, VarSetMixin, ttk.Label):
-    def __init__(self, master, value=None, **kwargs):
-        self.var = tkinter.StringVar(value=value)
-        kwargs.update(textvariable=self.var)
-        super().__init__(master, **kwargs)
-
+class Label(HelpTextMixin, StringVarMixin, ttk.Label):
+    pass
 
 
 class BaseFrame(ttk.Frame):
