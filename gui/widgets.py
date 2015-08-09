@@ -13,21 +13,27 @@ class VarSetMixin:
        self.var.set(value=value)
 
 
-class CheckButton(VarGetMixin, ttk.Checkbutton):
+class HelpTextMixin:
+    def __init__(self, *args, **kwargs):
+        self.help_text = kwargs.pop('help_text','')
+        super().__init__(*args, **kwargs)
+
+
+class CheckButton(HelpTextMixin, VarGetMixin, ttk.Checkbutton):
     def __init__(self, master, value=1, **kwargs):
         self.var = tkinter.IntVar(value=value)
         kwargs.update(variable=self.var)
         super().__init__(master, **kwargs)
 
 
-class Entry(VarGetMixin, ttk.Entry):
+class Entry(HelpTextMixin, VarGetMixin, ttk.Entry):
     def __init__(self, master, value='', **kwargs):
         self.var = tkinter.StringVar(value=value)
         kwargs.update(textvariable=self.var)
         super().__init__(master, **kwargs)
 
 
-class NumberEntry(VarGetMixin, ttk.Entry):
+class NumberEntry(HelpTextMixin, VarGetMixin, ttk.Entry):
     def __init__(self, master, value=None, **kwargs):
         super().__init__(master, **kwargs)
         self.var = tkinter.IntVar(value=value)
@@ -47,7 +53,7 @@ class NumberEntry(VarGetMixin, ttk.Entry):
         return False
 
 
-class Label(VarGetMixin, VarSetMixin, ttk.Label):
+class Label(HelpTextMixin, VarGetMixin, VarSetMixin, ttk.Label):
     def __init__(self, master, value=None, **kwargs):
         self.var = tkinter.StringVar(value=value)
         kwargs.update(textvariable=self.var)

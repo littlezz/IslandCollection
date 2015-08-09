@@ -13,7 +13,7 @@ class UrlSelectColumnFrame(ttk.Frame):
         super().__init__(master, **kw)
         self.database_id = id
         self.check_button = CheckButton(self, value=is_using)
-        self.url_text = Entry(self, width=50, value=url)
+        self.url_text = Entry(self, width=50, value=url, help_text='url!!!!')
         self.response_num_text = NumberEntry(self, width=5, value=response_gt)
         self.max_page_text = NumberEntry(self, width=5, value=max_page)
         self.delete_button = ttk.Button(self, text='Delete', command=self.delete)
@@ -23,6 +23,9 @@ class UrlSelectColumnFrame(ttk.Frame):
         self.response_num_text.grid(column=2, row=0)
         self.max_page_text.grid(column=3, row=0)
         self.delete_button.grid(column=4, row=0)
+
+        for w in self.children.values():
+            w.bind('<Enter>', self.show_help_text)
 
     def get_as_dict(self):
         ret = {
@@ -37,6 +40,10 @@ class UrlSelectColumnFrame(ttk.Frame):
     def delete(self):
         database.delete_by_id(self.database_id)
         self.destroy()
+
+    def show_help_text(self, event):
+        help_text = event.widget.help_text
+        self.master.set_info(help_text)
 
 
 class FootFrame(ttk.Frame):
@@ -61,10 +68,7 @@ class SideFrame(BaseFrame):
         self.info_label.grid(column=0, row=2)
 
     def set_info(self, info):
-        if not info:
-            info = 'fail'
-        else:
-            info='successful!'
+
         self.info_label.set(info)
 
 
@@ -94,7 +98,7 @@ class ContentFrame(BaseFrame):
             self.add_content_row(**t)
 
 
-    def save(self, send_info):
+    def save(self):
         """
         save content info
         :return:
@@ -103,9 +107,16 @@ class ContentFrame(BaseFrame):
             task = row.get_as_dict()
             is_success = database.create_or_update_data(task)
             # TODO: resolve not success
-            send_info(is_success)
+            if not is_success:
+                info = 'fail'
+            else:
+                info='successful!'
+            self.set_info(info)
             if not is_success:
                 break
+
+    def set_info(self, info):
+        self.master.set_info(info)
 
 
 class MainFrame(BaseMainFrameLayout):
@@ -117,6 +128,9 @@ class MainFrame(BaseMainFrameLayout):
 
         self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
 
-        _save_send_info = partial(self.content_frame.save, send_info=self.side_frame.set_info)
-        self.side_frame.save_button.configure(command=_save_send_info)
+        # _save_send_info = partial(self.content_frame.save, send_info=self.side_frame.set_info)
+        # self.side_frame.save_button.configure(command=_save_send_info)
+        self.side_frame.save_button.configure(command=self.content_frame.save)
 
+    def set_info(self, info):
+        self.side_frame.set_info(info)
