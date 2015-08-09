@@ -18,6 +18,31 @@ def init_start_url(url):
     return island_class.init_start_url(url)
 
 
+def validate_url(url):
+    """
+    :param url:
+    :return:status code
+
+    status code   --->  info
+    ---------------------------
+        0               success
+        1               no scheme
+        2               island not support
+
+
+    """
+    p = parse.urlparse(url)
+    if not p.sheme:
+        return 1
+
+
+    try:
+        determine_island_name(url)
+    except IslandNotDetectError:
+        return 2
+    else:
+        return 0
+
 
 class Analyzer:
 
