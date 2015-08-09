@@ -1,4 +1,3 @@
-from tkinter import ttk
 from .widgets import BaseFrame
 __author__ = 'zz'
 

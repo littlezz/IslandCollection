@@ -11,11 +11,6 @@ class VarGetSetMixin:
        self.var.set(value=value)
 
 
-# class IntVarMixin(BaseVarMixin):
-#     def __init__(self, *args, **kwargs):
-#         value = kwargs.pop('value', None)
-#         self.var = tkinter.IntVar(value=value)
-#         super().__init__(*args, **kwargs)
 
 
 class StringVarMixin(VarGetSetMixin):

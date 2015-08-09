@@ -2,7 +2,6 @@ from tkinter import ttk
 from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, Label, Button
 from gui.layouts import BaseMainFrameLayout
 from core import database
-from functools import partial
 __author__ = 'zz'
 
 
@@ -128,8 +127,6 @@ class MainFrame(BaseMainFrameLayout):
 
         self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
 
-        # _save_send_info = partial(self.content_frame.save, send_info=self.side_frame.set_info)
-        # self.side_frame.save_button.configure(command=_save_send_info)
         self.side_frame.save_button.configure(command=self.content_frame.save)
 
     def set_info(self, info):
