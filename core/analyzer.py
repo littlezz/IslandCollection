@@ -32,7 +32,7 @@ def validate_url(url):
 
     """
     p = parse.urlparse(url)
-    if not p.sheme:
+    if not p.scheme:
         return 1
 
 

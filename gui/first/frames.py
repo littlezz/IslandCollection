@@ -3,7 +3,9 @@ from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, InfoLabel, B
 from gui.layouts import BaseMainFrameLayout
 from core import database
 from functools import partial
+from core import analyzer
 __author__ = 'zz'
+
 
 
 
@@ -78,17 +80,17 @@ class SideFrame(BaseFrame):
 
 class ContentFrame(BaseFrame):
     def _init(self):
-        self.column_names = UrlSelectColumnFrame(self)
-        self.column_names.grid(column=0, row=0)
+        # self.column_names = UrlSelectColumnFrame(self)
+        # self.column_names.grid(column=0, row=0)
 
-        [w.destroy() for w in self.column_names.winfo_children()]
+        # [w.destroy() for w in self.column_names.winfo_children()]
+        #
+        # _Label = partial(ttk.Label, self.column_names)
+        # _Label(text='URL', width=20).grid(column=0, row=0, sticky='W')
+        # _Label(text='Response Number').grid(column=1, row=0)
+        # _Label(text='Max Page').grid(column=2, row=0)
 
-        _Label = partial(ttk.Label, self.column_names)
-        _Label(text='URL', width=20).grid(column=0, row=0, sticky='W')
-        _Label(text='Response Number').grid(column=1, row=0)
-        _Label(text='Max Page').grid(column=2, row=0)
-
-        self.row_num = 1
+        self.row_num = 0
         self.init_list()
 
     def add_content_row(self, **kwargs):
@@ -115,20 +117,42 @@ class ContentFrame(BaseFrame):
         save content info
         :return:
         """
-        for _, row in self.children.items():
+        for index, row in enumerate(self.children.values()):
             task = row.get_as_dict()
-            is_success = database.create_or_update_data(task)
-            # TODO: resolve not success
-            if not is_success:
-                info = 'fail'
+            if self.validate_task(row, task):
+                is_success = database.create_or_update_data(task)
+                # TODO: resolve not success
+                if not is_success:
+                    info = 'fail'
+                else:
+                    info='successful!'
+                self.set_info(info)
+                if not is_success:
+                    break
             else:
-                info='successful!'
-            self.set_info(info)
-            if not is_success:
+                print(index)
                 break
 
     def set_info(self, info):
         self.master.set_info(info)
+
+
+    def validate_task(self, widget, task):
+        url = task.get('url')
+        status_code = analyzer.validate_url(url)
+        if status_code != 0:
+
+            widget.configure(style="wrong.TFrame")
+            if status_code == 1:
+                self.set_info('input right url')
+            if status_code == 2:
+                self.set_info('island not support!')
+
+            return False
+        else:
+            # widget
+            pass
+            return True
 
 
 class MainFrame(BaseMainFrameLayout):
@@ -140,6 +164,12 @@ class MainFrame(BaseMainFrameLayout):
 
         self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
         self.side_frame.save_button.configure(command=self.content_frame.save)
+
+        self._make_style()
+
+    def _make_style(self):
+        style = ttk.Style(self)
+        style.configure('wrong.TFrame', background='red')
 
     def set_info(self, info):
         self.side_frame.set_info(info)
