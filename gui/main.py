@@ -12,10 +12,10 @@ def next_frame(master):
 
 root = Tk()
 root.title('Island Collections')
-# root.minsize(width=666, height=666)
+root.minsize(width=666, height=666)
 
 mainframe = MainFrame(root)
-mainframe.grid(column=0, row=0)
+mainframe.grid(column=0, row=0, sticky='NWSE')
 
 # ttk.Button(text='next', command=lambda : next_frame(mainframe)).grid(column=1, row=1)
 
