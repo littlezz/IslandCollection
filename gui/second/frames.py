@@ -18,15 +18,15 @@ class RowFrame(ttk.Frame):
             image.thumbnail(size)
             image = ImageTk.PhotoImage(image)
             self.image_label = ttk.Label(self, image=image)
-            self.image_label.grid(column=0, row=0)
+            self.image_label.grid(column=0, row=0, rowspan=2)
             self.image_label.image=image
 
         # todo: clickable
         self.link_label = widgets.HyperLabel(self, text=link, link=link, cursor='hand2', foreground='blue')
         self.text_label = widgets.HyperLabel(self, text=text, link=link)
 
-        self.link_label.grid(column=1, row=0)
-        self.text_label.grid(column=1, row=1)
+        self.link_label.grid(column=1, row=0, sticky='NW')
+        self.text_label.grid(column=1, row=1, sticky='NW')
 
     def _get_url(self):
         return self.link_label['text']
