@@ -1,5 +1,6 @@
 from tkinter import ttk
 import tkinter
+import webbrowser
 __author__ = 'zz'
 
 
@@ -25,6 +26,18 @@ class HelpTextMixin:
     def __init__(self, *args, **kwargs):
         self.help_text = kwargs.pop('help_text','')
         super().__init__(*args, **kwargs)
+
+
+class HyperMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bind('<1>', self._click)
+
+    def _click(self, event):
+        webbrowser.open_new(self._get_url())
+
+    def _get_url(self):
+        raise NotImplementedError
 
 
 
@@ -67,6 +80,15 @@ class NumberEntry(HelpTextMixin, VarGetSetMixin, ttk.Entry):
 
 class InfoLabel(HelpTextMixin, StringVarMixin, ttk.Label):
     pass
+
+
+class HyperLabel(HyperMixin, ttk.Label):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.configure(foreground='blue', cursor='hand2')
+
+    def _get_url(self):
+        return self['text']
 
 
 class BaseFrame(ttk.Frame):
