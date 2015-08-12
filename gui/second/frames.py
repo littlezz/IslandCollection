@@ -52,8 +52,8 @@ class ContentFrame(widgets.BaseFrame):
 
     def test(self):
         for i in range(5):
-
-            r = RowFrame(self, text='the'+str(i), link='http://www.baidu.com')
+            im = Image.open('gui/images_test/1t.jpg')
+            r = RowFrame(self, image=im, text='the'+str(i), link='http://www.baidu.com')
             r.grid(column=0, row=self.rows)
             self.rows += 1
 
