@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 
-from gui.first.frames import MainFrame
+from gui.second.frames import MainFrame
 
 __author__ = 'zz'
 

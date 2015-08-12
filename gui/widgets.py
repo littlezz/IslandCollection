@@ -30,14 +30,15 @@ class HelpTextMixin:
 
 class HyperMixin:
     def __init__(self, *args, **kwargs):
+        self._link = kwargs.pop('link', '')
         super().__init__(*args, **kwargs)
         self.bind('<1>', self._click)
 
     def _click(self, event):
-        webbrowser.open_new(self._get_url())
+        webbrowser.open(self._get_url())
 
     def _get_url(self):
-        raise NotImplementedError
+        return self._link
 
 
 
@@ -83,12 +84,8 @@ class InfoLabel(HelpTextMixin, StringVarMixin, ttk.Label):
 
 
 class HyperLabel(HyperMixin, ttk.Label):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.configure(foreground='blue', cursor='hand2')
+    pass
 
-    def _get_url(self):
-        return self['text']
 
 
 class BaseFrame(ttk.Frame):

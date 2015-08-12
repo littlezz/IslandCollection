@@ -1,4 +1,5 @@
 from .. import widgets
+from .. import layouts
 from tkinter import ttk
 __author__ = 'zz'
 
@@ -18,11 +19,14 @@ class RowFrame(ttk.Frame):
             self.image_label.grid(column=0, row=0)
 
         # todo: clickable
-        self.link_label = ttk.Label(self, text=link)
-        self.text_label = ttk.Label(self, text=text)
+        self.link_label = widgets.HyperLabel(self, text=link, link=link, cursor='hand2', foreground='blue')
+        self.text_label = widgets.HyperLabel(self, text=text, link=link)
 
         self.link_label.grid(column=1, row=0)
         self.text_label.grid(column=1, row=1)
+
+    def _get_url(self):
+        return self.link_label['text']
 
 
 class FootFrame(widgets.BaseFrame):
@@ -32,3 +36,28 @@ class FootFrame(widgets.BaseFrame):
 
     def set_button_command(self, command):
         self.button.configure(command=command)
+
+
+class SideFrame(ttk.Frame):
+    pass
+
+
+class ContentFrame(widgets.BaseFrame):
+    def _init(self):
+        self.rows = 0
+        self.test()
+
+    def test(self):
+        for i in range(5):
+
+            r = RowFrame(self, text='the'+str(i), link='http://www.baidu.com')
+            r.grid(column=0, row=self.rows)
+            self.rows += 1
+
+
+
+class MainFrame(layouts.BaseMainFrameLayout):
+    def _init(self):
+        self.content_frame = ContentFrame(self)
+        self.side_frame = SideFrame(self)
+        self.foot_frame = FootFrame(self)
