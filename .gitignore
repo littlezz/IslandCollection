@@ -7,3 +7,6 @@ __pycache__/
 
 simple_test.py
 db.sqlite3
+
+# folder for test file
+*test/
