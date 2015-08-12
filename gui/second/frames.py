@@ -1,6 +1,7 @@
 from .. import widgets
 from .. import layouts
 from tkinter import ttk
+from PIL import Image, ImageTk
 __author__ = 'zz'
 
 
@@ -15,8 +16,10 @@ class RowFrame(ttk.Frame):
 
         if image:
             image.thumbnail(size)
+            image = ImageTk.PhotoImage(image)
             self.image_label = ttk.Label(self, image=image)
             self.image_label.grid(column=0, row=0)
+            self.image_label.image=image
 
         # todo: clickable
         self.link_label = widgets.HyperLabel(self, text=link, link=link, cursor='hand2', foreground='blue')
