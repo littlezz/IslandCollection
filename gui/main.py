@@ -9,6 +9,9 @@ class FrameStack:
         self._frames = list(frame_list)
         self._now = now or self._frames[0]
 
+        if not self._now.grid_info():
+            self._now.grid(**self._get_grid_kwargs())
+
     def previous_frame(self):
         """
         change to previous frame
@@ -48,7 +51,7 @@ root.minsize(width=666, height=666)
 
 f1 = first.MainFrame(root)
 f2 = second.MainFrame(root)
-f1.grid(column=0, row=0, sticky='NWSE')
+
 
 fs = FrameStack(frame_list=[f1, f2], now=f1)
 
