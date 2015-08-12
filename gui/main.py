@@ -1,6 +1,4 @@
 import tkinter
-from tkinter import ttk
-
 from gui import first, second
 
 __author__ = 'zz'
@@ -38,13 +36,11 @@ class FrameStack:
         return {
             'column': 0,
             'row': 0,
+            'sticky': 'NWSE',
         }
 
 
 
-def change_frame(self, to):
-    self.grid_forget()
-    to.grid(column=0, row=0)
 
 root = tkinter.Tk()
 root.title('Island Collections')
@@ -59,6 +55,5 @@ fs = FrameStack(frame_list=[f1, f2], now=f1)
 f1.foot_frame.button.configure(command=fs.next_frame)
 f2.foot_frame.button.configure(command=fs.previous_frame)
 
-# ttk.Button(text='next', command=lambda : next_frame(mainframe)).grid(column=1, row=1)
 
 root.mainloop()
