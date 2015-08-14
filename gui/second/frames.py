@@ -29,6 +29,7 @@ class RowFrame(ttk.Frame):
         self.link_label.grid(column=1, row=0, sticky='NW')
         self.text_label.grid(column=1, row=1, sticky='NW')
 
+
     def _get_url(self):
         return self.link_label['text']
 
@@ -50,7 +51,7 @@ class ContentFrame(widgets.BaseFrame):
     def _init(self):
 
         # scrollable content
-        self.canvas = tk.Canvas(self)
+        self.canvas = tk.Canvas(self, height=400, width=400)
         self.frame = ttk.Frame(self.canvas)
         self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vbs.set)
@@ -79,7 +80,8 @@ class ContentFrame(widgets.BaseFrame):
         for i in range(5):
             im = Image.open('gui/images_test/1t.jpg')
             r = RowFrame(self.frame, image=im, text='the'+str(i), link='http://www.baidu.com')
-            r.grid(column=0, row=self.rows)
+
+            r.grid(column=0, row=self.rows, sticky='NEWS')
             self.rows += 1
 
 
