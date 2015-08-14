@@ -1,6 +1,7 @@
 from .. import widgets
 from .. import layouts
 from tkinter import ttk
+import tkinter as tk
 from PIL import Image, ImageTk
 __author__ = 'zz'
 
@@ -47,13 +48,37 @@ class SideFrame(ttk.Frame):
 
 class ContentFrame(widgets.BaseFrame):
     def _init(self):
+
+        # scrollable content
+        self.canvas = tk.Canvas(self)
+        self.frame = ttk.Frame(self.canvas)
+        self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=self.vbs.set)
+        self.vbs.pack(side='right', fill='y')
+        self.canvas.pack(side='left', fill='both', expand=True)
+        self.canvas.create_window((4,4), window=self.frame, anchor='nw', tag='self.frame')
+        self.frame.bind('<Configure>', self.on_frame_configure)
+        # root = self
+        # self.canvas = tk.Canvas(root, borderwidth=0, background="#ffffff")
+        # self.frame = ttk.Frame(self.canvas, background="#ffffff")
+        # self.vsb = ttk.Scrollbar(root, orient="vertical", command=self.canvas.yview)
+        # self.canvas.configure(yscrollcommand=self.vsb.set)
+        # self.vsb.pack(side="right", fill="y")
+        # self.canvas.pack(side="left", fill="both", expand=True)
+        # self.canvas.create_window((4,4), window=self.frame, anchor="nw",
+        #                           tags="self.frame")
+        # self.frame.bind("<Configure>", self.on_frame_configure)
+
         self.rows = 0
         self.test()
+
+    def on_frame_configure(self, e):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def test(self):
         for i in range(5):
             im = Image.open('gui/images_test/1t.jpg')
-            r = RowFrame(self, image=im, text='the'+str(i), link='http://www.baidu.com')
+            r = RowFrame(self.frame, image=im, text='the'+str(i), link='http://www.baidu.com')
             r.grid(column=0, row=self.rows)
             self.rows += 1
 
