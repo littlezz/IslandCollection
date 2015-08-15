@@ -5,7 +5,8 @@ __author__ = 'zz'
 
 
 class FrameStack:
-    def __init__(self, frame_list, now=None):
+    def __init__(self, root, frame_list, now=None):
+        self._root = root
         self._frames = list(frame_list)
         self._now = now or self._frames[0]
 
@@ -34,6 +35,9 @@ class FrameStack:
         now.grid_forget()
         to.grid(**self._get_grid_kwargs())
         self._now = to
+        # update frame
+        self._root.update()
+
 
     def _get_grid_kwargs(self):
         return {
@@ -53,7 +57,7 @@ f1 = first.MainFrame(root)
 f2 = second.MainFrame(root)
 
 
-fs = FrameStack(frame_list=[f1, f2], now=f1)
+fs = FrameStack(root=root, frame_list=[f1, f2], now=f1)
 
 f1.foot_frame.button.configure(command=fs.next_frame)
 f2.foot_frame.button.configure(command=fs.previous_frame)
