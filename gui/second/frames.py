@@ -3,7 +3,9 @@ from .. import layouts
 from tkinter import ttk
 import tkinter as tk
 from PIL import Image, ImageTk
+from core.compat import IS_WINDOWS
 __author__ = 'zz'
+
 
 
 
@@ -59,6 +61,7 @@ class ContentFrame(widgets.BaseFrame):
         self.canvas.pack(side='left', fill='both', expand=True)
         self.canvas.create_window((4,4), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
+        self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
         # root = self
         # self.canvas = tk.Canvas(root, borderwidth=0, background="#ffffff")
         # self.frame = ttk.Frame(self.canvas, background="#ffffff")
@@ -75,6 +78,12 @@ class ContentFrame(widgets.BaseFrame):
 
     def on_frame_configure(self, e):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def _on_mousewheel(self, e):
+        if IS_WINDOWS:
+            self.canvas.yview_scroll(-(e.delta/120), 'units')
+        else:
+            self.canvas.yview_scroll(-e.delta, 'units')
 
     def test(self):
         for i in range(5):
