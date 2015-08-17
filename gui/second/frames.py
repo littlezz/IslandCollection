@@ -81,7 +81,7 @@ class ContentFrame(widgets.BaseFrame):
 
     def _on_mousewheel(self, e):
         if IS_WINDOWS:
-            self.canvas.yview_scroll(-(e.delta/120), 'units')
+            self.canvas.yview_scroll(-int(e.delta/120), 'units')
         else:
             self.canvas.yview_scroll(-e.delta, 'units')
 
