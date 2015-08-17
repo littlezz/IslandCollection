@@ -16,10 +16,14 @@ class ThreadSafeSet(set):
 
 
 class LookUp:
+    register_operator = ('in', 'gt', 'lt', 'eq', 'abs_eq')
+
     def __init__(self, **kwargs):
         lp, rp = kwargs.popitem()
-        self.name, self.operator = self._split_clause(lp)
-        self.value = rp
+        self.lookup_name, self.operator = self._split_clause(lp)
+        self.lookup_value = rp
+
+        assert self.operator in self.register_operator, 'Do not support operator:{} '.format(self.operator)
 
     def _split_clause(self, s):
         clauses = s.split('__')
@@ -33,6 +37,32 @@ class LookUp:
         validate the data if satisfy this lookup
         :return: True or False
         """
+        assert hasattr(data, self.lookup_name), 'data has no {} attribute'.format(self.lookup_name)
+        target = getattr(data, self.lookup_name)
+
+        return getattr(self, '_op_{}'.format(self.operator))(target)
+
+
+    def _op_in(self, target):
+        return self.lookup_value in target
+
+
+    def _op_gt(self, target):
+        target = int(target)
+        lookup_value =int(self.lookup_value)
+        return target > lookup_value
+
+    def _op_lt(self, target):
+        return not self._op_gt(target)
+
+    def _op_eq(self, target):
+        if isinstance(self.lookup_value, bool):
+            return bool(target) == self.lookup_value
+        else:
+            return self._op_abs_eq(target)
+
+    def _op_abs_eq(self, target):
+        return target == self.lookup_value
 
 
 class FilterableList(UserList):
