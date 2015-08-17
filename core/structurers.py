@@ -14,6 +14,22 @@ class ThreadSafeSet(set):
             return super().add(*args, **kwargs)
 
 
+
+class LookUp:
+    def __init__(self, **kwargs):
+        lp, rp = kwargs.popitem()
+        self.name, self.operator = self.split_clause(lp)
+        self.value = rp
+
+    def split_clause(self, s):
+        clauses = s.split('__')
+        if len(clauses) == 1:
+            return clauses[0], None
+        else:
+            return clauses[0], clauses[1]
+
+
+
 class FilterableList(UserList):
     # todo: rewrite filter method
     def filter(self, **kwargs):
