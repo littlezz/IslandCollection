@@ -1,7 +1,12 @@
 from tkinter import ttk
 import tkinter
 import webbrowser
+from concurrent.futures import ThreadPoolExecutor
 __author__ = 'zz'
+
+
+
+_thread_pool = ThreadPoolExecutor(5)
 
 
 class VarGetSetMixin:
@@ -86,6 +91,31 @@ class InfoLabel(HelpTextMixin, StringVarMixin, ttk.Label):
 class HyperLabel(HyperMixin, ttk.Label):
     pass
 
+
+class ImageFrame(ttk.Frame):
+    height = 128
+    width = 128
+    def __init__(self, *args, **kwargs):
+        self.image_url = kwargs.pop('image_url', None)
+
+        kwargs.update({
+            'height':self.height,
+            'width': self.width
+        })
+        super().__init__(*args, **kwargs)
+        self.grid_propagate(0)
+
+        if self.image_url:
+            self.label = ttk.Label(self, text='downloading...')
+            _thread_pool.submit(self.download_image)
+
+        else:
+            self.label = ttk.Label(self, text='No Image')
+
+        self.label.grid(column=0, row=0)
+
+    def download_image(self):
+        pass
 
 
 class ExtraDataComboBox(HelpTextMixin, ttk.Combobox):
