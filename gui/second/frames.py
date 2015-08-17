@@ -47,7 +47,9 @@ class FootFrame(widgets.BaseFrame):
 
 class SideFrame(widgets.BaseFrame):
     def _init(self):
-        self.cb = widgets.ComboBox(self, values=('images', 'content'), help_text='filter type')
+        self.cb = widgets.ExtraDataComboBox(self,
+                                            values_pair=(('has image', 'images'), ('content contain', 'text__in'))
+                                            ,help_text='filter type')
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
 
