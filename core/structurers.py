@@ -3,7 +3,6 @@ from collections import UserList
 __author__ = 'zz'
 
 
-
 class ThreadSafeSet(set):
     def __init__(self, *args, **kwargs):
         self._add_lock = threading.Lock()
@@ -12,7 +11,6 @@ class ThreadSafeSet(set):
     def add(self, *args, **kwargs):
         with self._add_lock:
             return super().add(*args, **kwargs)
-
 
 
 class LookUp:
@@ -44,14 +42,12 @@ class LookUp:
 
         return getattr(self, '_op_{}'.format(self.operator))(obj_value)
 
-
     def _op_contain(self, obj_value):
         return self.lookup_value in obj_value
 
-
     def _op_gt(self, obj_value):
         obj_value = int(obj_value)
-        lookup_value =int(self.lookup_value)
+        lookup_value = int(self.lookup_value)
         return obj_value > lookup_value
 
     def _op_lt(self, obj_value):
