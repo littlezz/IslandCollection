@@ -17,6 +17,7 @@ class ThreadSafeSet(set):
 
 class LookUp:
     register_operator = ('in', 'gt', 'lt', 'eq', 'abs_eq')
+    DEFAULT_OPERATOR = 'eq'
 
     def __init__(self, **kwargs):
         lp, rp = kwargs.popitem()
@@ -28,7 +29,8 @@ class LookUp:
     def _split_clause(self, s):
         clauses = s.split('__')
         if len(clauses) == 1:
-            return clauses[0], None
+
+            return clauses[0], self.DEFAULT_OPERATOR
         else:
             return clauses[0], clauses[1]
 
@@ -66,15 +68,7 @@ class LookUp:
 
 
 class FilterableList(UserList):
-    # todo: rewrite filter method
-    # def filter(self, **kwargs):
-    #     ret = self.__class__()
-    #
-    #     for i in self.data:
-    #         if all(getattr(i, name)==value for name, value in kwargs.items()):
-    #             ret.append(i)
-    #
-    #     return ret
+
     def filter(self, **kwargs):
         """
         :param kwargs: one key-value pattern
