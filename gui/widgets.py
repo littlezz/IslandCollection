@@ -88,8 +88,23 @@ class HyperLabel(HyperMixin, ttk.Label):
 
 
 
-class ComboBox(HelpTextMixin, StringVarMixin, ttk.Combobox):
-    pass
+class ExtraDataComboBox(HelpTextMixin, ttk.Combobox):
+    def __init__(self, *args, **kwargs):
+        values_pair = kwargs.pop('values_pair', [])
+        values = []
+        self._maps = dict()
+        for pair in values_pair:
+            value, extra = pair
+            self._maps.update({value:extra})
+            values.append(value)
+
+        kwargs.update(values=values)
+        super().__init__(*args, **kwargs)
+
+    def get(self):
+        value = super().get()
+        return self._maps[value]
+
 
 
 class BaseFrame(ttk.Frame):
