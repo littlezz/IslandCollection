@@ -45,11 +45,27 @@ class FootFrame(widgets.BaseFrame):
         self.button.configure(command=command)
 
 
-class SideFrame(ttk.Frame):
-    pass
+class SideFrame(widgets.BaseFrame):
+    def _init(self):
+        self.cb = widgets.ComboBox(self, values=('images', 'content'), help_text='filter type')
+        self.entry = widgets.Entry(self, help_text='filter args')
+        self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
+
+        self.cb.grid(column=0, row=0)
+        self.entry.grid(column=1, row=0)
+        self.submit.grid(column=2, row=0)
+
+    def submit_filter(self):
+        filter_type = self.cb.get()
+        args = self.entry.get()
+        self.master.do_filter(filter_type=filter_type, args=args)
 
 
 class ContentFrame(widgets.BaseFrame):
+    def __init__(self, *args, results=None, **kwargs):
+        self.results = results
+        super().__init__(*args, **kwargs)
+
     def _init(self):
 
         # scrollable content
@@ -74,6 +90,13 @@ class ContentFrame(widgets.BaseFrame):
         # self.frame.bind("<Configure>", self.on_frame_configure)
 
         self.rows = 0
+
+        self.show_results(self.results)
+
+    def show_results(self, results):
+        """
+        generate the results
+        """
         self.test()
 
     def on_frame_configure(self, e):
@@ -93,6 +116,14 @@ class ContentFrame(widgets.BaseFrame):
             r.grid(column=0, row=self.rows, sticky='NEWS')
             self.rows += 1
 
+    def do_filter(self, filter_type, args):
+        results = self.results.filter(**{filter_type: args})
+
+        for child in self.frame.children:
+            child.destory()
+
+        # TODO: inject result to content
+        # self.show_results(results)
 
 
 class MainFrame(layouts.BaseMainFrameLayout):
@@ -100,3 +131,7 @@ class MainFrame(layouts.BaseMainFrameLayout):
         self.content_frame = ContentFrame(self)
         self.side_frame = SideFrame(self)
         self.foot_frame = FootFrame(self)
+
+
+    def do_filter(self, filter_type, args=None):
+        self.content_frame.do_filter(filter_type=filter_type, args=args)

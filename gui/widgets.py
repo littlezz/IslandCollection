@@ -88,6 +88,10 @@ class HyperLabel(HyperMixin, ttk.Label):
 
 
 
+class ComboBox(HelpTextMixin, StringVarMixin, ttk.Combobox):
+    pass
+
+
 class BaseFrame(ttk.Frame):
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)

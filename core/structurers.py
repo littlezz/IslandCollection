@@ -15,6 +15,7 @@ class ThreadSafeSet(set):
 
 
 class FilterableList(UserList):
+    # todo: rewrite filter method
     def filter(self, **kwargs):
         ret = []
         for i in self.data:
