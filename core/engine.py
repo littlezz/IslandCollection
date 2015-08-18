@@ -148,13 +148,14 @@ class Engine:
             raise e
 
 
-    def shutdown(self):
+    def shutdown(self, wait=True):
         with self._shutdown_lock:
             self._shutdown = True
             self._task_queue.put(_sentinel)
 
-        for t in self._thread_tasks:
-            t.join()
+        if wait:
+            for t in self._thread_tasks:
+                t.join()
 
 
     def _retrieve_task(self):
