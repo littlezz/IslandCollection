@@ -63,8 +63,10 @@ class BaseMainFrameLayout(BaseFrame):
     foot_frame = dummy
 
     def __init__(self, master=None, **kwargs):
-        super().__init__(master, **kwargs)
         self.top_stack = kwargs.pop('top_stack')
+
+        super().__init__(master, **kwargs)
+
         self.top_stack.add_frame(self)
 
         self.configure(padding='5 5 5 5')

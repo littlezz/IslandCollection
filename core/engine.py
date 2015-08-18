@@ -26,7 +26,8 @@ def singleton(cls):
 class Engine:
     def __init__(self, tasks=None, max_thread=8):
         # tasks should be a list of dict contain 'url', 'response_gt','max_page'
-        self._init_tasks(tasks)
+        if tasks:
+            self._init_tasks(tasks)
         self.max_thread = max_thread
         self._init()
 

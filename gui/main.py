@@ -18,6 +18,7 @@ fs = FrameStack(root=root)
 f1 = first.MainFrame(root, top_stack=fs)
 f2 = second.MainFrame(root, top_stack=fs)
 
+fs.show()
 # # todo:rewrite with engine
 # fs = FrameStack(root=root, frame_list=[f1, f2], now=f1)
 
