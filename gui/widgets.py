@@ -96,7 +96,7 @@ class HyperLabel(HyperMixin, ttk.Label):
 
 
 class ImageFrame(ttk.Frame):
-    height = 128
+    height = 100
     width = 128
     def __init__(self, *args, **kwargs):
         self.image_url = kwargs.pop('image_url', None)

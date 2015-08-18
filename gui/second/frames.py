@@ -15,29 +15,18 @@ class RowFrame(ttk.Frame):
         image_fp = kwargs.pop('image_fp', None)
         text = kwargs.pop('text', '')
         link = kwargs.pop('link', '')
-        # size = kwargs.pop('size', (128, 128))
         super().__init__(master, **kwargs)
 
-        # if image:
-        #     image.thumbnail(size)
-        #     image = ImageTk.PhotoImage(image)
-        #     self.image_label = ttk.Label(self, image=image)
-        #     self.image_label.grid(column=0, row=0, rowspan=2)
-        #     self.image_label.image=image
 
         self.image_frame = widgets.ImageFrame(self, image_url=image_url, image_fp=image_fp)
 
-        # todo: clickable
         self.link_label = widgets.HyperLabel(self, text=link, link=link, cursor='hand2', foreground='blue')
-        self.text_label = widgets.HyperLabel(self, text=text, link=link)
+        self.text_label = ttk.Label(self, text=text)
 
         self.image_frame.grid(column=0, row=0, rowspan=2)
         self.link_label.grid(column=1, row=0, sticky='NW')
         self.text_label.grid(column=1, row=1, sticky='NW')
 
-
-    def _get_url(self):
-        return self.link_label['text']
 
 
 class FootFrame(widgets.BaseFrame):
@@ -52,8 +41,8 @@ class FootFrame(widgets.BaseFrame):
 class SideFrame(widgets.BaseFrame):
     def _init(self):
         self.cb = widgets.ExtraDataComboBox(self,
-                                            values_pair=(('has image', 'images'), ('content contain', 'text__in'))
-                                            ,help_text='filter type')
+                                            values_pair=(('has image', 'images'), ('content contain', 'text__in')),
+                                            help_text='filter type')
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
 
@@ -81,19 +70,10 @@ class ContentFrame(widgets.BaseFrame):
         self.canvas.configure(yscrollcommand=self.vbs.set)
         self.vbs.pack(side='right', fill='y')
         self.canvas.pack(side='left', fill='both', expand=True)
-        self.canvas.create_window((4,4), window=self.frame, anchor='nw', tag='self.frame')
+        self.canvas.create_window((4, 4), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
-        # root = self
-        # self.canvas = tk.Canvas(root, borderwidth=0, background="#ffffff")
-        # self.frame = ttk.Frame(self.canvas, background="#ffffff")
-        # self.vsb = ttk.Scrollbar(root, orient="vertical", command=self.canvas.yview)
-        # self.canvas.configure(yscrollcommand=self.vsb.set)
-        # self.vsb.pack(side="right", fill="y")
-        # self.canvas.pack(side="left", fill="both", expand=True)
-        # self.canvas.create_window((4,4), window=self.frame, anchor="nw",
-        #                           tags="self.frame")
-        # self.frame.bind("<Configure>", self.on_frame_configure)
+
 
         self.rows = 0
 
@@ -117,8 +97,10 @@ class ContentFrame(widgets.BaseFrame):
     def test(self):
         for i in range(5):
             im = Image.open('gui/images_test/1t.jpg')
-            r = RowFrame(self.frame, image_fp=im, text='the'+str(i), link='http://www.baidu.com')
-
+            if i%2==0:
+                r = RowFrame(self.frame, image_fp=im, text='the'+str(i), link='http://www.baidu.com')
+            else:
+                r = RowFrame(self.frame,image_fp=im, text='the'+str(i), link='http://www.baidu.com')
             r.grid(column=0, row=self.rows, sticky='NEWS')
             self.rows += 1
 
