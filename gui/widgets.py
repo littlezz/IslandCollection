@@ -157,3 +157,13 @@ class BaseFrame(ttk.Frame):
 
     def _init(self):
         raise NotImplementedError
+
+
+class RootTk(tkinter.Tk):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def on_closing(self):
+        _thread_pool.shutdown(wait=False)
+        self.destroy()
