@@ -63,4 +63,4 @@ f1.foot_frame.button.configure(command=fs.next_frame)
 f2.foot_frame.button.configure(command=fs.previous_frame)
 
 
-root.mainloop()
+# root.mainloop()
