@@ -57,9 +57,9 @@ class SideFrame(widgets.BaseFrame):
 
 
 class ContentFrame(widgets.BaseFrame):
-    def __init__(self, *args, results=None, **kwargs):
-        self.results = results
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, results=None, **kwargs):
+    #     self.results = results
+    #     super().__init__(*args, **kwargs)
 
     def _init(self):
 
@@ -75,15 +75,23 @@ class ContentFrame(widgets.BaseFrame):
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
 
 
+
         self.rows = 0
 
-        self.show_results(self.results)
+        # self.show_results()
+        self.bind("<<add_result>>", self.add_result)
 
-    def show_results(self, results):
+    def show_results(self):
         """
         generate the results
         """
         self.test()
+
+    def add_result(self, result:dict):
+
+        r = RowFrame(self.frame, **result)
+        r.grid(column=0, row=self.rows, sticky='NEWS')
+        self.rows += 1
 
     def on_frame_configure(self, e):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -109,6 +117,7 @@ class ContentFrame(widgets.BaseFrame):
 
         for child in self.frame.children:
             child.destory()
+        self.rows = 0
 
         # TODO: inject result to content
         # self.show_results(results)

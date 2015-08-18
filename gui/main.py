@@ -14,7 +14,7 @@ class FrameStack:
         if not self._now.grid_info():
             self._now.grid(**self._get_grid_kwargs())
 
-    def previous_frame(self):
+    def previous_frame(self, **kwargs):
         """
         change to previous frame
         :return:
@@ -22,20 +22,21 @@ class FrameStack:
         now = self._now
         index = self._frames.index(now)
         to = self._frames[index-1]
-        self.change_frame(now, to)
+        self.change_frame(now, to, **kwargs)
 
 
-    def next_frame(self):
+    def next_frame(self, **kwargs):
         now = self._now
         index = self._frames.index(now)
         to = self._frames[index+1]
-        self.change_frame(now, to)
+        self.change_frame(now, to, **kwargs)
 
 
-    def change_frame(self, now, to):
+    def change_frame(self, now, to, **kwargs):
         now.grid_forget()
         to.grid(**self._get_grid_kwargs())
         self._now = to
+        to.on_show(**kwargs)
         # update frame
         self._root.update()
 
@@ -56,7 +57,7 @@ root.minsize(width=666, height=666)
 f1 = first.MainFrame(root)
 f2 = second.MainFrame(root)
 
-
+# todo:rewrite with engine
 fs = FrameStack(root=root, frame_list=[f1, f2], now=f1)
 
 f1.foot_frame.button.configure(command=fs.next_frame)

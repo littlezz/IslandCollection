@@ -29,3 +29,6 @@ class BaseMainFrameLayout(BaseFrame):
         self.content_frame.grid(column=0, row=0)
         self.side_frame.grid(column=1, row=0, sticky='NW')
         self.foot_frame.grid(column=0, row=1)
+
+    def on_show(self, **kwargs):
+        pass
