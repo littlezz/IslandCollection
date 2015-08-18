@@ -100,7 +100,7 @@ class ImageFrame(ttk.Frame):
     width = 128
     def __init__(self, *args, **kwargs):
         self.image_url = kwargs.pop('image_url', None)
-
+        self.image_fp = kwargs.pop('image_fp', None)
         kwargs.update({
             'height':self.height,
             'width': self.width
@@ -112,6 +112,12 @@ class ImageFrame(ttk.Frame):
             self.label = ttk.Label(self, text='downloading...')
             _thread_pool.submit(self.download_image)
 
+        elif self.image_fp:
+            im = self.image_fp
+            im.thumbnail((self.width, self.height))
+            im = ImageTk.PhotoImage(im)
+            self.label = ttk.Label(self, image=im)
+            self.label.image = im
         else:
             self.label = ttk.Label(self, text='No Image')
 
