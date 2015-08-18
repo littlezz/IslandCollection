@@ -11,23 +11,27 @@ __author__ = 'zz'
 
 class RowFrame(ttk.Frame):
     def __init__(self, master, **kwargs):
-        image = kwargs.pop('image', None)
+        image_url = kwargs.pop('image_url', None)
+        image_fp = kwargs.pop('image_fp', None)
         text = kwargs.pop('text', '')
         link = kwargs.pop('link', '')
-        size = kwargs.pop('size', (128, 128))
+        # size = kwargs.pop('size', (128, 128))
         super().__init__(master, **kwargs)
 
-        if image:
-            image.thumbnail(size)
-            image = ImageTk.PhotoImage(image)
-            self.image_label = ttk.Label(self, image=image)
-            self.image_label.grid(column=0, row=0, rowspan=2)
-            self.image_label.image=image
+        # if image:
+        #     image.thumbnail(size)
+        #     image = ImageTk.PhotoImage(image)
+        #     self.image_label = ttk.Label(self, image=image)
+        #     self.image_label.grid(column=0, row=0, rowspan=2)
+        #     self.image_label.image=image
+
+        self.image_frame = widgets.ImageFrame(self, image_url=image_url, image_fp=image_fp)
 
         # todo: clickable
         self.link_label = widgets.HyperLabel(self, text=link, link=link, cursor='hand2', foreground='blue')
         self.text_label = widgets.HyperLabel(self, text=text, link=link)
 
+        self.image_frame.grid(column=0, row=0, rowspan=2)
         self.link_label.grid(column=1, row=0, sticky='NW')
         self.text_label.grid(column=1, row=1, sticky='NW')
 
@@ -113,7 +117,7 @@ class ContentFrame(widgets.BaseFrame):
     def test(self):
         for i in range(5):
             im = Image.open('gui/images_test/1t.jpg')
-            r = RowFrame(self.frame, image=im, text='the'+str(i), link='http://www.baidu.com')
+            r = RowFrame(self.frame, image_fp=im, text='the'+str(i), link='http://www.baidu.com')
 
             r.grid(column=0, row=self.rows, sticky='NEWS')
             self.rows += 1
