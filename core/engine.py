@@ -12,6 +12,17 @@ _sentinel = object()
 Task = namedtuple('Task', ['url', 'response_gt', 'max_page'])
 
 
+def singleton(cls):
+    _instance=None
+    def wrapper(*args, **kwargs):
+        nonlocal _instance
+        if not _instance:
+            _instance = cls(*args, **kwargs)
+        return _instance
+    return wrapper
+
+
+@singleton
 class Engine:
     def __init__(self, tasks=None, max_thread=8):
         # tasks should be a list of dict contain 'url', 'response_gt','max_page'
@@ -204,7 +215,7 @@ class Engine:
 
 
 
-
+engine = Engine()
 
 
 
