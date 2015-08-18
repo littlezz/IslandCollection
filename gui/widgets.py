@@ -2,6 +2,9 @@ from tkinter import ttk
 import tkinter
 import webbrowser
 from concurrent.futures import ThreadPoolExecutor
+import requests
+from io import BytesIO
+from PIL import Image, ImageTk
 __author__ = 'zz'
 
 
@@ -115,7 +118,13 @@ class ImageFrame(ttk.Frame):
         self.label.grid(column=0, row=0)
 
     def download_image(self):
-        pass
+        data = requests.get(self.image_url).content
+        fp = BytesIO(data)
+        im = Image.open(fp)
+        im.thumbnail((self.width, self.height))
+        im = ImageTk.PhotoImage(im)
+        self.label.image = im
+        self.label.configure(image=im)
 
 
 class ExtraDataComboBox(HelpTextMixin, ttk.Combobox):
