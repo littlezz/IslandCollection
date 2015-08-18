@@ -1,5 +1,6 @@
 import tkinter
 from gui import first, second
+from gui import widgets
 
 __author__ = 'zz'
 
@@ -48,6 +49,10 @@ class FrameStack:
 
 
 
+def on_closing():
+    widgets._thread_pool.shutdown(wait=False)
+    root.destroy()
+
 
 root = tkinter.Tk()
 root.title('Island Collections')
@@ -62,5 +67,6 @@ fs = FrameStack(root=root, frame_list=[f1, f2], now=f1)
 f1.foot_frame.button.configure(command=fs.next_frame)
 f2.foot_frame.button.configure(command=fs.previous_frame)
 
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 root.mainloop()

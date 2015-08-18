@@ -95,10 +95,10 @@ class ContentFrame(widgets.BaseFrame):
             self.canvas.yview_scroll(-e.delta, 'units')
 
     def test(self):
-        for i in range(5):
+        for i in range(50):
             im = Image.open('gui/images_test/1t.jpg')
             if i%2==0:
-                r = RowFrame(self.frame, image_fp=im, text='the'+str(i), link='http://www.baidu.com')
+                r = RowFrame(self.frame, image_url="http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg", text='the'+str(i), link='http://www.baidu.com')
             else:
                 r = RowFrame(self.frame,image_fp=im, text='the'+str(i), link='http://www.baidu.com')
             r.grid(column=0, row=self.rows, sticky='NEWS')

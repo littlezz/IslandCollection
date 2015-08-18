@@ -1,15 +1,13 @@
 from tkinter import ttk
 import tkinter
 import webbrowser
-from concurrent.futures import ThreadPoolExecutor
 import requests
 from io import BytesIO
 from PIL import Image, ImageTk
+from .threadpool import thread_pool as _thread_pool
 __author__ = 'zz'
 
 
-
-_thread_pool = ThreadPoolExecutor(5)
 
 
 class VarGetSetMixin:
