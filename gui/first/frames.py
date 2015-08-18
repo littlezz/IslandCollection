@@ -164,7 +164,7 @@ class MainFrame(BaseMainFrameLayout):
 
         self.side_frame.add_button.configure(command=self.content_frame.add_content_row)
         self.side_frame.save_button.configure(command=self.content_frame.save)
-
+        self.foot_frame.button.configure(command=self.next_frame)
         self._make_style()
 
     def _make_style(self):

@@ -129,6 +129,8 @@ class MainFrame(layouts.BaseMainFrameLayout):
         self.side_frame = SideFrame(self)
         self.foot_frame = FootFrame(self)
 
+        self.foot_frame.button.configure(command=self.previous_frame)
+
 
     def do_filter(self, filter_type, args=None):
         self.content_frame.do_filter(filter_type=filter_type, args=args)
