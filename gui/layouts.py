@@ -5,6 +5,9 @@ __author__ = 'zz'
 dummy = object()
 
 
+
+
+
 class BaseMainFrameLayout(BaseFrame):
 
     must_frames = ('side_frame', 'content_frame', 'foot_frame')
@@ -14,6 +17,8 @@ class BaseMainFrameLayout(BaseFrame):
 
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
+        self.top_stack = kwargs.pop('top_stack')
+
         self.configure(padding='5 5 5 5')
         self.layout()
 
@@ -31,4 +36,21 @@ class BaseMainFrameLayout(BaseFrame):
         self.foot_frame.grid(column=0, row=1)
 
     def on_show(self, **kwargs):
-        pass
+        """
+        :kwargs data from last frame on_change method
+        hook for do something when this frame is show
+        """
+
+    def on_change(self, **kwargs):
+        """
+        hook for do something when this frame is hide/change
+        :return a dict contain data that pass to next/previous frame on_show method
+        """
+
+    def next_frame(self):
+        pass_data = self.on_change()
+        self.top_stack.next_frame(**pass_data)
+
+    def previous_frame(self):
+        pass_data = self.on_change()
+        self.top_stack.previous_frame(**pass_data)
