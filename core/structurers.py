@@ -80,3 +80,18 @@ class FilterableList(UserList):
                 ret.append(item)
 
         return ret
+
+
+
+class ResultInfo:
+    __slots__ = ('text', 'link', 'response_num', 'image_url')
+
+    def __init__(self, text, link, response_num, image_url=None):
+        self.text = text
+        self.link = link
+        self.response_num = response_num
+        self.image_url = image_url
+
+    @property
+    def has_image(self):
+        return True if self.image_url else False
