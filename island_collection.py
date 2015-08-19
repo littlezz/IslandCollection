@@ -9,7 +9,7 @@ def shell_main():
     print("""
     输入 url， 响应数， 最大搜索页数， 空格隔开, 回车结束一次输入
     比如\n
-    http://h.nimingban.com/%E7%BB%BC%E5%90%88%E7%89%881 20 10\n
+    http://h.nimingban.com/f/%E7%BB%BC%E5%90%88%E7%89%881 20 10\n
     连续两次回车开始程序
     """)
     tasks = []
