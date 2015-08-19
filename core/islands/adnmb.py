@@ -22,7 +22,7 @@ class ADNMBIsland(NextPageStaticHtmlMixin, BaseIsland):
         else:
             return ''
 
-    def get_div_content(self, tip):
+    def get_div_content_text(self, tip):
         content_tag = tip.parent.find('div', class_='quote')
         if content_tag:
             return content_tag.text

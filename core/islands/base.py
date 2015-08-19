@@ -1,9 +1,8 @@
 from collections import namedtuple
 import re
 from urllib import parse
-
 from bs4 import BeautifulSoup
-
+from core.structurers import ResultInfo
 __author__ = 'zz'
 
 
@@ -97,7 +96,7 @@ class BaseIsland(metaclass=IslandMeta):
         return the link href string, eg, 'http://xx.com', or /xx/xx.html """
         raise NotImplementedError
 
-    def get_div_content(self, tip):
+    def get_div_content_text(self, tip):
         """
         return content
         """
@@ -130,23 +129,23 @@ class BaseIsland(metaclass=IslandMeta):
 
     def island_split_page(self):
         """
-        must return DivInfo object
+        must return list of ResultInfo instance
         """
-        result = []
+        results = []
 
         pd = self.pd
         tips = self.get_tips(pd)
         for tip in tips:
             response_num = int(self.get_div_response_num(tip))
             link = self.complete_link(self.get_div_link(tip))
-            content = self.get_div_content(tip)
-            image = self.get_div_image(tip) if self.show_image else ''
-            image = self.complete_link(image)
+            text = self.get_div_content_text(tip)
+            image_url = self.get_div_image(tip) if self.show_image else ''
+            image_url = self.complete_link(image_url)
 
-            div = DivInfo(content=content, link=link, response_num=response_num, image=image)
-            result.append(div)
+            result = ResultInfo(text=text, link=link, response_num=response_num, image_url=image_url)
+            results.append(result)
 
-        return result
+        return results
 
 
     def complete_link(self, url):

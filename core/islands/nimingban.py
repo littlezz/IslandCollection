@@ -18,7 +18,7 @@ class NiMingBanIsland(NextPageJsonParameterMixin, BaseIsland):
         suffix = 't' + '/' + str(thread_id)
         return parse.urljoin(self.root_url, suffix)
 
-    def get_div_content(self, tip):
+    def get_div_content_text(self, tip):
         return tip['content']
 
     def get_div_response_num(self, tip):
