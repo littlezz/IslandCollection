@@ -90,12 +90,14 @@ class BaseMainFrameLayout(BaseFrame):
         :kwargs data from last frame on_change method
         hook for do something when this frame is show
         """
+        pass
 
     def on_change(self):
         """
         hook for do something when this frame is hide/change
         :return a dict contain data that pass to next/previous frame on_show method
         """
+        pass
 
     def next_frame(self):
         pass_data = self.on_change()

@@ -4,6 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from PIL import Image, ImageTk
 from core.compat import IS_WINDOWS
+from core.structurers import FilterableList
 __author__ = 'zz'
 
 
@@ -73,25 +74,34 @@ class ContentFrame(widgets.BaseFrame):
         self.canvas.create_window((4, 4), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
-
+        self.results = FilterableList()
 
 
         self.rows = 0
 
         # self.show_results()
-        self.bind("<<add_result>>", self.add_result)
+        # self.bind("<<add_result>>", self.add_result)
 
-    def show_results(self):
+    def show_results(self, results):
         """
         generate the results
         """
-        self.test()
+        for r in results:
+            self.show_one_result(r)
 
-    def add_result(self, result:dict):
+
+    def show_one_result(self, result:dict):
 
         r = RowFrame(self.frame, **result)
         r.grid(column=0, row=self.rows, sticky='NEWS')
         self.rows += 1
+        return r
+
+    def add_new_result(self, result:dict):
+        r = self.show_one_result(result)
+        self.results.append(r)
+
+
 
     def on_frame_configure(self, e):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -105,22 +115,30 @@ class ContentFrame(widgets.BaseFrame):
     def test(self):
         for i in range(50):
             im = Image.open('gui/images_test/1t.jpg')
-            if i%2==0:
-                r = RowFrame(self.frame, image_url="http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg", text='the'+str(i), link='http://www.baidu.com')
+            result = {
+                'image_url': "http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg",
+                'text': 'the'+str(i),
+                'link': 'http://www.baidu.com',
+            }
+            if i % 2 ==0:
+                self.add_new_result(result)
             else:
-                r = RowFrame(self.frame,image_fp=im, text='the'+str(i), link='http://www.baidu.com')
-            r.grid(column=0, row=self.rows, sticky='NEWS')
-            self.rows += 1
+                result.pop('image_url')
+                result['image_fp'] = im
+                self.add_new_result(result)
 
     def do_filter(self, filter_type, args):
         results = self.results.filter(**{filter_type: args})
 
-        for child in self.frame.children:
-            child.destory()
-        self.rows = 0
-
+        self.refresh_result_pannel()
         # TODO: inject result to content
-        # self.show_results(results)
+        self.show_results(results)
+
+    def refresh_result_pannel(self):
+        for c in self.frame.children:
+            c.destory()
+
+        self.rows = 0
 
 
 class MainFrame(layouts.BaseMainFrameLayout):
@@ -134,3 +152,6 @@ class MainFrame(layouts.BaseMainFrameLayout):
 
     def do_filter(self, filter_type, args=None):
         self.content_frame.do_filter(filter_type=filter_type, args=args)
+
+    def on_show(self, pass_data):
+        self.content_frame.test()
