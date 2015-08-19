@@ -43,7 +43,7 @@ class NextPageJsonParameterMixin:
 
         base_url, query = parse.splitquery(self.current_page_url)
         if not query:
-            query='page=0'
+            query='page=1'
 
         _, count = parse.parse_qsl(query)[0]
         count = int(count) + 1
