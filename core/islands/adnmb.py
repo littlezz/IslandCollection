@@ -32,7 +32,7 @@ class ADNMBIsland(NextPageStaticHtmlMixin, BaseIsland):
     def get_div_image(self, tip):
         img_tag =  tip.parent.find('img', class_='img')
         if img_tag:
-            return img_tag.get('src')
+            return self.complete_image_link(img_tag.get('src'))
         else:
             return ''
 
