@@ -44,6 +44,7 @@ class BaseIsland(metaclass=IslandMeta):
     _island_netloc = ''
     _island_scheme = 'http'
     _count_pattern = re.compile(r'\s(\d+)\s')
+    _static_root = ''
     json_data = False
     show_image = True
 
@@ -68,6 +69,10 @@ class BaseIsland(metaclass=IslandMeta):
     @property
     def root_url(self):
         return parse.urlunsplit((self._island_scheme, self._island_netloc, '', '', ''))
+
+    @property
+    def static_root(self):
+        return self._static_root or self.root_url
 
     def get_div_response_num(self, tip):
         """
@@ -140,7 +145,7 @@ class BaseIsland(metaclass=IslandMeta):
             link = self.complete_link(self.get_div_link(tip))
             text = self.get_div_content_text(tip)
             image_url = self.get_div_image(tip) if self.show_image else ''
-            image_url = self.complete_link(image_url)
+            # image_url = self.complete_link(image_url)
 
             result = ResultInfo(text=text, link=link, response_num=response_num, image_url=image_url)
             results.append(result)
@@ -148,10 +153,20 @@ class BaseIsland(metaclass=IslandMeta):
         return results
 
 
-    def complete_link(self, url):
+    def complete_link(self, url, root_url=None):
         if not url:
             return ''
-        return parse.urljoin(self.root_url, url)
+
+        if root_url is None:
+            root_url = self.root_url
+
+        return parse.urljoin(root_url, url)
+
+
+    def complete_image_link(self, url):
+        if url.startswith('/'):
+            url = url[1:]
+        return self.complete_link(url, root_url=self.static_root)
 
 
     @staticmethod
