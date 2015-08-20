@@ -5,7 +5,10 @@ __author__ = 'zz'
 
 
 class KoukokuIsland(NextPageJsonParameterMixin, BaseIsland):
-    _island_name = 'koukoku'
+    """
+    光驱岛
+    """
+    _island_name = 'kukuku'
     _island_netloc = 'kukuku.cc'
     _static_root = 'http://static.koukuko.com/h/'
     json_data = True
@@ -35,3 +38,11 @@ class KoukokuIsland(NextPageJsonParameterMixin, BaseIsland):
             parts = parse.urlsplit(start_url)
             path = parts.path + '.json'
             return parse.urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+
+
+class OldKoukukoIsland(KoukokuIsland):
+    """
+    旧光驱岛域名
+    """
+    _island_netloc = 'h.koukuko.com'
+    _island_name = 'old_koukuko'
