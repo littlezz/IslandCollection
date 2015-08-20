@@ -5,6 +5,8 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from core.compat import IS_WINDOWS
 from core.structurers import FilterableList, ResultInfo
+import threading
+from gui.threadpool import thread_pool
 __author__ = 'zz'
 
 
@@ -90,7 +92,7 @@ class ContentFrame(widgets.BaseFrame):
         self.frame.bind('<Configure>', self.on_frame_configure)
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
         self.results = FilterableList()
-
+        self.filter_kwargs = dict()
 
         self.rows = 0
 
@@ -114,7 +116,10 @@ class ContentFrame(widgets.BaseFrame):
 
     def add_new_result(self, result:ResultInfo):
         row = RowFrame(self.frame, **result.as_dict())
-        self.show_one_result(row)
+
+        # 检测当前的row是否符合过滤规则
+        if FilterableList([row]).filter(**self.filter_kwargs):
+            self.show_one_result(row)
 
         self.results.append(row)
 
@@ -130,7 +135,9 @@ class ContentFrame(widgets.BaseFrame):
             self.canvas.yview_scroll(-e.delta, 'units')
 
     def test(self):
+        import time
         for i in range(50):
+
             im = Image.open('gui/images_test/1t.jpg')
             result = {
                 'image_url': "http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg",
@@ -151,11 +158,13 @@ class ContentFrame(widgets.BaseFrame):
                 result.pop('image_url')
                 result = ResultInfo(**result)
                 self.add_new_result(result)
-
+            time.sleep(0.5)
 
     def do_filter(self, **kwargs):
 
+        self.filter_kwargs = kwargs
         results = self.results.all()
+
         for key, value in kwargs.items():
             results = results.filter(**{key: value})
 
@@ -184,4 +193,12 @@ class MainFrame(layouts.BaseMainFrameLayout):
         self.content_frame.do_filter(**kwargs)
 
     def on_show(self, pass_data):
-        self.content_frame.test()
+        # self.thread = threading.Thread(target=self.content_frame.test)
+        # self.thread.daemon = True
+        # self.thread.start()
+        self.thread = thread_pool.submit(self.content_frame.test)
+
+    def on_change(self):
+        # TODO: shutdown the engine
+        # thread_pool.shutdown(wait=False)
+        self.content_frame.refresh_result_pannel()
