@@ -85,7 +85,7 @@ class FilterableList(UserList):
         return ret
 
     def all(self):
-        return self[:]
+        return self
 
 
 class ResultInfo:

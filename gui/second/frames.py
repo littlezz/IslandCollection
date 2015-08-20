@@ -46,7 +46,8 @@ class FootFrame(widgets.BaseFrame):
 class SideFrame(widgets.BaseFrame):
     def _init(self):
 
-        self.has_image = widgets.CheckButton(self, text='has image', command=lambda :self.master.do_filter(filter_type='has_image', args=self.has_image.get()))
+        self.has_image = widgets.CheckButton(self, text='has image',
+                                             command=lambda : self.master.do_filter(has_image=self.has_image.get()))
 
         self.cb = widgets.ExtraDataComboBox(self,
                                             values_pair=(('link contain', 'link__contain'), ('content contain', 'text__contain')),
@@ -60,9 +61,15 @@ class SideFrame(widgets.BaseFrame):
         self.submit.grid(column=2, row=1)
 
     def submit_filter(self):
+
+        kw = {}
+        kw.update(has_image=self.has_image.get())
+
         filter_type = self.cb.get()
         args = self.entry.get()
-        self.master.do_filter(filter_type=filter_type, args=args)
+
+        kw.update({filter_type: args})
+        self.master.do_filter(**kw)
 
 
 class ContentFrame(widgets.BaseFrame):
@@ -145,9 +152,12 @@ class ContentFrame(widgets.BaseFrame):
                 result = ResultInfo(**result)
                 self.add_new_result(result)
 
-    # TODO: rewrite the api for combine filter
-    def do_filter(self, filter_type, args):
-        results = self.results.filter(**{filter_type: args})
+
+    def do_filter(self, **kwargs):
+
+        results = self.results.all()
+        for key, value in kwargs.items():
+            results = results.filter(**{key: value})
 
         self.refresh_result_pannel()
         # TODO: inject result to content
@@ -170,8 +180,8 @@ class MainFrame(layouts.BaseMainFrameLayout):
         self.foot_frame.button.configure(command=self.previous_frame)
 
 
-    def do_filter(self, filter_type, args=None):
-        self.content_frame.do_filter(filter_type=filter_type, args=args)
+    def do_filter(self, **kwargs):
+        self.content_frame.do_filter(**kwargs)
 
     def on_show(self, pass_data):
         self.content_frame.test()
