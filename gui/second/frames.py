@@ -45,15 +45,19 @@ class FootFrame(widgets.BaseFrame):
 
 class SideFrame(widgets.BaseFrame):
     def _init(self):
+
+        self.has_image = widgets.CheckButton(self, text='has image', command=lambda :self.master.do_filter(filter_type='has_image', args=self.has_image.get()))
+
         self.cb = widgets.ExtraDataComboBox(self,
-                                            values_pair=(('has image', 'has_image'), ('content contain', 'text__contain')),
+                                            values_pair=(('link contain', 'link__contain'), ('content contain', 'text__contain')),
                                             help_text='filter type')
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
 
-        self.cb.grid(column=0, row=0)
-        self.entry.grid(column=1, row=0)
-        self.submit.grid(column=2, row=0)
+        self.has_image.grid(column=0, row=0, sticky='NW')
+        self.cb.grid(column=0, row=1)
+        self.entry.grid(column=1, row=1)
+        self.submit.grid(column=2, row=1)
 
     def submit_filter(self):
         filter_type = self.cb.get()
@@ -127,12 +131,17 @@ class ContentFrame(widgets.BaseFrame):
                 'link': 'http://www.baidu.com',
                 'response_num':30,
             }
-            if i % 2 ==0:
+            m = i % 3
+            if m ==0:
+                result = ResultInfo(**result)
+                self.add_new_result(result)
+            elif m==1:
+                result.pop('image_url')
+                result['image_fp'] = im
                 result = ResultInfo(**result)
                 self.add_new_result(result)
             else:
                 result.pop('image_url')
-                result['image_fp'] = im
                 result = ResultInfo(**result)
                 self.add_new_result(result)
 
