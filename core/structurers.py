@@ -77,8 +77,10 @@ class FilterableList(UserList):
 
         lookup = LookUp(**kwargs)
         ret = self.__class__()
+        # thread safe
+        data = self.data.copy()
 
-        for item in self.data:
+        for item in data:
             if lookup.find(item):
                 ret.append(item)
 
