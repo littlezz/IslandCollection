@@ -145,6 +145,7 @@ class ContentFrame(widgets.BaseFrame):
                 result = ResultInfo(**result)
                 self.add_new_result(result)
 
+    # TODO: rewrite the api for combine filter
     def do_filter(self, filter_type, args):
         results = self.results.filter(**{filter_type: args})
 

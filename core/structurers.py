@@ -70,10 +70,13 @@ class FilterableList(UserList):
         :param kwargs: one key-value pattern
         :return:filterable list
         """
-        ret = self.__class__()
+        if not kwargs:
+            return self.all()
 
         assert len(kwargs) == 1, 'filter method accept one  lookup per time'
+
         lookup = LookUp(**kwargs)
+        ret = self.__class__()
 
         for item in self.data:
             if lookup.find(item):
@@ -81,6 +84,8 @@ class FilterableList(UserList):
 
         return ret
 
+    def all(self):
+        return self[:]
 
 
 class ResultInfo:
