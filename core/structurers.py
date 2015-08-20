@@ -54,8 +54,8 @@ class LookUp:
         return not self._op_gt(obj_value)
 
     def _op_eq(self, obj_value):
-        if isinstance(self.lookup_value, bool):
-            return bool(obj_value) == self.lookup_value
+        if isinstance(self.lookup_value, bool) or isinstance(obj_value, bool):
+            return bool(obj_value) == bool(self.lookup_value)
         else:
             return self._op_abs_eq(obj_value)
 

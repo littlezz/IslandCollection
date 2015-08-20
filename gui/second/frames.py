@@ -12,23 +12,26 @@ __author__ = 'zz'
 
 class RowFrame(ttk.Frame):
     def __init__(self, master, **kwargs):
-        image_url = kwargs.pop('image_url', None)
-        image_fp = kwargs.pop('image_fp', None)
-        text = kwargs.pop('text', '')
-        link = kwargs.pop('link', '')
-        response_num = kwargs.pop('response_num', 0)
+        self.image_url = kwargs.pop('image_url', None)
+        self.image_fp = kwargs.pop('image_fp', None)
+        self.text = kwargs.pop('text', '')
+        self.link = kwargs.pop('link', '')
+        self.response_num = kwargs.pop('response_num', 0)
         super().__init__(master, **kwargs)
 
 
-        self.image_frame = widgets.ImageFrame(self, image_url=image_url, image_fp=image_fp)
+        self.image_frame = widgets.ImageFrame(self, image_url=self.image_url, image_fp=self.image_fp)
 
-        self.link_label = widgets.HyperLabel(self, text=link, link=link, cursor='hand2', foreground='blue')
-        self.text_label = ttk.Label(self, text=text)
+        self.link_label = widgets.HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
+        self.text_label = ttk.Label(self, text=self.text)
 
         self.image_frame.grid(column=0, row=0, rowspan=2)
         self.link_label.grid(column=1, row=0, sticky='NW')
         self.text_label.grid(column=1, row=1, sticky='NW')
 
+    @property
+    def has_image(self):
+        return True if self.image_url or self.image_fp else False
 
 
 class FootFrame(widgets.BaseFrame):
@@ -86,23 +89,23 @@ class ContentFrame(widgets.BaseFrame):
     def show_results(self, results):
         """
         generate the results
-        :parameter results: instance ResultInfo list
+        :parameter results: instance RawFrame list
         """
         for r in results:
             self.show_one_result(r)
 
 
-    def show_one_result(self, result:ResultInfo):
+    def show_one_result(self, result:RowFrame):
 
-        r = RowFrame(self.frame, **result.as_dict())
-        r.grid(column=0, row=self.rows, sticky='NEWS')
+        # r = RowFrame(self.frame, **result.as_dict())
+        result.grid(column=0, row=self.rows, sticky='NEWS')
         self.rows += 1
-        return r
 
     def add_new_result(self, result:ResultInfo):
-        self.show_one_result(result)
+        row = RowFrame(self.frame, **result.as_dict())
+        self.show_one_result(row)
 
-        self.results.append(result)
+        self.results.append(row)
 
 
 
@@ -143,7 +146,7 @@ class ContentFrame(widgets.BaseFrame):
     def refresh_result_pannel(self):
         # l = list(self.frame.children.values())
         for c in self.frame.winfo_children():
-            c.destroy()
+            c.grid_forget()
 
         self.rows = 0
 
