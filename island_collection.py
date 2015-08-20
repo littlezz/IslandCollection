@@ -46,4 +46,4 @@ def main():
     root.mainloop()
 
 if __name__ == '__main__':
-    shell_main()
+   main()

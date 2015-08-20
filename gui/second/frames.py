@@ -4,7 +4,7 @@ from tkinter import ttk
 import tkinter as tk
 from PIL import Image, ImageTk
 from core.compat import IS_WINDOWS
-from core.structurers import FilterableList
+from core.structurers import FilterableList, ResultInfo
 __author__ = 'zz'
 
 
@@ -16,6 +16,7 @@ class RowFrame(ttk.Frame):
         image_fp = kwargs.pop('image_fp', None)
         text = kwargs.pop('text', '')
         link = kwargs.pop('link', '')
+        response_num = kwargs.pop('response_num', 0)
         super().__init__(master, **kwargs)
 
 
@@ -42,7 +43,7 @@ class FootFrame(widgets.BaseFrame):
 class SideFrame(widgets.BaseFrame):
     def _init(self):
         self.cb = widgets.ExtraDataComboBox(self,
-                                            values_pair=(('has image', 'images'), ('content contain', 'text__in')),
+                                            values_pair=(('has image', 'has_image'), ('content contain', 'text__contain')),
                                             help_text='filter type')
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
@@ -85,21 +86,23 @@ class ContentFrame(widgets.BaseFrame):
     def show_results(self, results):
         """
         generate the results
+        :parameter results: instance ResultInfo list
         """
         for r in results:
             self.show_one_result(r)
 
 
-    def show_one_result(self, result:dict):
+    def show_one_result(self, result:ResultInfo):
 
-        r = RowFrame(self.frame, **result)
+        r = RowFrame(self.frame, **result.as_dict())
         r.grid(column=0, row=self.rows, sticky='NEWS')
         self.rows += 1
         return r
 
-    def add_new_result(self, result:dict):
-        r = self.show_one_result(result)
-        self.results.append(r)
+    def add_new_result(self, result:ResultInfo):
+        self.show_one_result(result)
+
+        self.results.append(result)
 
 
 
@@ -119,12 +122,15 @@ class ContentFrame(widgets.BaseFrame):
                 'image_url': "http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg",
                 'text': 'the'+str(i),
                 'link': 'http://www.baidu.com',
+                'response_num':30,
             }
             if i % 2 ==0:
+                result = ResultInfo(**result)
                 self.add_new_result(result)
             else:
                 result.pop('image_url')
                 result['image_fp'] = im
+                result = ResultInfo(**result)
                 self.add_new_result(result)
 
     def do_filter(self, filter_type, args):
@@ -135,8 +141,9 @@ class ContentFrame(widgets.BaseFrame):
         self.show_results(results)
 
     def refresh_result_pannel(self):
-        for c in self.frame.children:
-            c.destory()
+        # l = list(self.frame.children.values())
+        for c in self.frame.winfo_children():
+            c.destroy()
 
         self.rows = 0
 

@@ -84,14 +84,19 @@ class FilterableList(UserList):
 
 
 class ResultInfo:
-    __slots__ = ('text', 'link', 'response_num', 'image_url')
+    # __slots__ = ('text', 'link', 'response_num', 'image_url')
 
-    def __init__(self, text, link, response_num, image_url=None):
+    def __init__(self, text, link, response_num, image_url=None, image_fp=None):
         self.text = text
         self.link = link
         self.response_num = response_num
         self.image_url = image_url
+        self.image_fp = image_fp
 
     @property
     def has_image(self):
-        return True if self.image_url else False
+        return True if self.image_url or self.image_fp else False
+
+
+    def as_dict(self):
+        return self.__dict__
