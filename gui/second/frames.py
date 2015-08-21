@@ -7,6 +7,7 @@ from core.compat import IS_WINDOWS
 from core.structurers import FilterableList, ResultInfo
 import threading
 from gui.threadpool import thread_pool
+from core.engine import engine
 __author__ = 'zz'
 
 
@@ -160,6 +161,17 @@ class ContentFrame(widgets.BaseFrame):
                 self.add_new_result(result)
             time.sleep(0.5)
 
+    def retrieve_result_from_engine(self):
+        import time
+        while engine.is_running:
+            result = engine.get_one_result()
+            if result:
+                self.add_new_result(result)
+                time.sleep(0)
+            else:
+                time.sleep(0.5)
+
+
     def do_filter(self, **kwargs):
 
         self.filter_kwargs = kwargs
@@ -173,7 +185,6 @@ class ContentFrame(widgets.BaseFrame):
         self.show_results(results)
 
     def refresh_result_pannel(self):
-        # l = list(self.frame.children.values())
         for c in self.frame.winfo_children():
             c.grid_forget()
 
@@ -196,9 +207,10 @@ class MainFrame(layouts.BaseMainFrameLayout):
         # self.thread = threading.Thread(target=self.content_frame.test)
         # self.thread.daemon = True
         # self.thread.start()
-        self.thread = thread_pool.submit(self.content_frame.test)
+        self.thread = thread_pool.submit(self.content_frame.retrieve_result_from_engine)
 
     def on_change(self):
         # TODO: shutdown the engine
         # thread_pool.shutdown(wait=False)
+        engine.shutdown(wait=False)
         self.content_frame.refresh_result_pannel()

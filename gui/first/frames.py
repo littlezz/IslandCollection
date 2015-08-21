@@ -4,6 +4,7 @@ from gui.layouts import BaseMainFrameLayout
 from core import database
 from functools import partial
 from core import analyzer
+from core.engine import engine
 __author__ = 'zz'
 
 
@@ -38,6 +39,11 @@ class UrlSelectColumnFrame(ttk.Frame):
             'id':self.database_id,
         }
         return ret
+
+    # def get_as_task(self):
+    #     """
+    #     :return:
+    #     """
 
     def delete(self):
         database.delete_by_id(self.database_id)
@@ -173,3 +179,8 @@ class MainFrame(BaseMainFrameLayout):
 
     def set_info(self, info):
         self.side_frame.set_info(info)
+
+    def on_change(self):
+        tasks = [row.get_as_dict() for row in self.content_frame.children.values()]
+        engine.set_init_tasks(tasks)
+        engine.start()
