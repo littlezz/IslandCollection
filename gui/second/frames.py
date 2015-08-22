@@ -14,6 +14,8 @@ __author__ = 'zz'
 
 
 class RowFrame(ttk.Frame):
+    _width = 600
+    _height = 200
     def __init__(self, master, **kwargs):
         self.image_url = kwargs.pop('image_url', None)
         self.image_fp = kwargs.pop('image_fp', None)
@@ -26,11 +28,14 @@ class RowFrame(ttk.Frame):
         self.image_frame = widgets.ImageFrame(self, image_url=self.image_url, image_fp=self.image_fp)
 
         self.link_label = widgets.HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
-        self.text_label = ttk.Label(self, text=self.text)
+        self.text_label = ttk.Label(self, text=self.text, width=50, wraplength=400)
 
         self.image_frame.grid(column=0, row=0, rowspan=2)
         self.link_label.grid(column=1, row=0, sticky='NW')
         self.text_label.grid(column=1, row=1, sticky='NW')
+
+        self.separator = ttk.Separator(self, orient=tk.HORIZONTAL)
+        self.separator.grid(column=0, row=2, columnspan=2, sticky='we', pady=7 , padx=25)
 
     @property
     def has_image(self):
@@ -82,14 +87,15 @@ class ContentFrame(widgets.BaseFrame):
 
     def _init(self):
 
+        # FIXME: make the canvas auto fit the width
         # scrollable content
-        self.canvas = tk.Canvas(self, height=400, width=400)
+        self.canvas = tk.Canvas(self, height=600, width=600)
         self.frame = ttk.Frame(self.canvas)
         self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vbs.set)
         self.vbs.pack(side='right', fill='y')
         self.canvas.pack(side='left', fill='both', expand=True)
-        self.canvas.create_window((4, 4), window=self.frame, anchor='nw', tag='self.frame')
+        self.canvas.create_window((0, 0), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
         self.results = FilterableList()
@@ -97,8 +103,6 @@ class ContentFrame(widgets.BaseFrame):
 
         self.rows = 0
 
-        # self.show_results()
-        # self.bind("<<add_result>>", self.add_result)
 
     def show_results(self, results):
         """
@@ -111,8 +115,7 @@ class ContentFrame(widgets.BaseFrame):
 
     def show_one_result(self, result:RowFrame):
 
-        # r = RowFrame(self.frame, **result.as_dict())
-        result.grid(column=0, row=self.rows, sticky='NEWS')
+        result.grid(column=0, row=self.rows)
         self.rows += 1
 
     def add_new_result(self, result:ResultInfo):
@@ -138,11 +141,11 @@ class ContentFrame(widgets.BaseFrame):
     def test(self):
         import time
         for i in range(50):
-
+            print(i)
             im = Image.open('gui/images_test/1t.jpg')
             result = {
                 'image_url': "http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg",
-                'text': 'the'+str(i),
+                'text': 'the'+str(i) + '0123456789'*20,
                 'link': 'http://www.baidu.com',
                 'response_num':30,
             }

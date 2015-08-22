@@ -94,8 +94,8 @@ class HyperLabel(HyperMixin, ttk.Label):
 
 
 class ImageFrame(ttk.Frame):
-    height = 100
-    width = 128
+    height = 192
+    width = 192
     def __init__(self, *args, **kwargs):
         self.image_url = kwargs.pop('image_url', None)
         self.image_fp = kwargs.pop('image_fp', None)
@@ -119,7 +119,7 @@ class ImageFrame(ttk.Frame):
         else:
             self.label = ttk.Label(self, text='No Image')
 
-        self.label.grid(column=0, row=0)
+        self.label.grid(column=0, row=0, sticky='W')
 
     def download_image(self):
         data = requests.get(self.image_url).content
