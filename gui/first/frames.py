@@ -176,6 +176,13 @@ class MainFrame(BaseMainFrameLayout):
         self.foot_frame.button.configure(command=self.next_frame)
         self._make_style()
 
+    def next_frame(self):
+        # validate there at least have one task
+        if any(row.info_is_using() for row in self.content_frame.children.values() ):
+            super().next_frame()
+        else:
+            self.set_info('no task select!')
+
     def _make_style(self):
         style = ttk.Style(self)
         style.configure('wrong.TFrame', background='red')
