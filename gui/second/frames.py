@@ -44,10 +44,18 @@ class RowFrame(ttk.Frame):
 class FootFrame(widgets.BaseFrame):
     def _init(self):
         self.button = widgets.Button(self, text='Back', help_text='back')
-        self.button.grid(column=0, row=0)
+        self.progressbar = ttk.Progressbar(self, orient=tk.HORIZONTAL, length=400, mode='determinate')
 
+        self.progressbar.grid(column=0, row=0, sticky='we')
+        self.button.grid(column=0, row=1)
     def set_button_command(self, command):
         self.button.configure(command=command)
+
+    def progressbar_start(self):
+        self.progressbar.start()
+
+    def progressbar_stop(self):
+        self.progressbar.stop()
 
 
 class SideFrame(widgets.BaseFrame):
@@ -162,6 +170,9 @@ class ContentFrame(widgets.BaseFrame):
 
     def retrieve_result_from_engine(self):
         import time
+
+        self.master.progressbar_start()
+
         while engine.is_running:
             result = engine.get_one_result()
             if result:
@@ -169,6 +180,8 @@ class ContentFrame(widgets.BaseFrame):
                 time.sleep(0)
             else:
                 time.sleep(0.5)
+
+        self.master.progressbar_stop()
 
 
     def do_filter(self, **kwargs):
@@ -209,3 +222,9 @@ class MainFrame(layouts.BaseMainFrameLayout):
         # TODO: shutdown the engine
         engine.shutdown(wait=False)
         self.content_frame.refresh_result_pannel()
+
+    def progressbar_start(self):
+        self.foot_frame.progressbar_start()
+
+    def progressbar_stop(self):
+        self.foot_frame.progressbar_stop()
