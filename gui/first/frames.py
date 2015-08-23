@@ -40,6 +40,12 @@ class UrlSelectColumnFrame(ttk.Frame):
         }
         return ret
 
+    def info_is_using(self):
+        """
+        :return: If Checkbutton is pressed
+        """
+        return True if self.check_button.get() else False
+
 
 
     def delete(self):
@@ -178,6 +184,6 @@ class MainFrame(BaseMainFrameLayout):
         self.side_frame.set_info(info)
 
     def on_change(self):
-        tasks = [row.get_as_dict() for row in self.content_frame.children.values()]
+        tasks = [row.get_as_dict() for row in self.content_frame.children.values() if row.info_is_using()]
         engine.set_init_tasks(tasks)
         engine.start()
