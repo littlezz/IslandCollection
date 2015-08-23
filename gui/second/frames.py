@@ -61,8 +61,9 @@ class FootFrame(widgets.BaseFrame):
 class SideFrame(widgets.BaseFrame):
     def _init(self):
 
-        self.has_image = widgets.CheckButton(self, text='has image',
-                                             command=lambda : self.master.do_filter(has_image=self.has_image.get()))
+        self.image_only = widgets.CheckButton(self, text='image only',
+                                              value=False,
+                                              command=self.image_only_command)
 
         self.cb = widgets.ExtraDataComboBox(self,
                                             values_pair=(('link contain', 'link__contain'), ('content contain', 'text__contain')),
@@ -70,7 +71,7 @@ class SideFrame(widgets.BaseFrame):
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
 
-        self.has_image.grid(column=0, row=0, sticky='NW')
+        self.image_only.grid(column=0, row=0, sticky='NW')
         self.cb.grid(column=0, row=1)
         self.entry.grid(column=1, row=1)
         self.submit.grid(column=0, row=2, columnspan=2)
@@ -78,13 +79,21 @@ class SideFrame(widgets.BaseFrame):
     def submit_filter(self):
 
         kw = {}
-        kw.update(has_image=self.has_image.get())
+
+        if self.image_only.get():
+            kw.update(has_image=self.image_only.get())
 
         filter_type = self.cb.get()
         args = self.entry.get()
 
         kw.update({filter_type: args})
         self.master.do_filter(**kw)
+
+    def image_only_command(self):
+        if self.image_only.get():
+            self.master.do_filter(has_image=True)
+        else:
+            self.master.clear_filter()
 
 
 class ContentFrame(widgets.BaseFrame):
@@ -185,6 +194,11 @@ class ContentFrame(widgets.BaseFrame):
 
 
     def do_filter(self, **kwargs):
+        """
+        pass nothing will clear the filter
+        :param kwargs:
+        :return:
+        """
 
         self.filter_kwargs = kwargs
         results = self.results.all()
@@ -194,6 +208,10 @@ class ContentFrame(widgets.BaseFrame):
 
         self.refresh_result_pannel()
         self.show_results(results)
+
+    def clear_filter(self):
+        self.do_filter()
+
 
     def refresh_result_pannel(self):
         for c in self.frame.winfo_children():
@@ -213,6 +231,9 @@ class MainFrame(layouts.BaseMainFrameLayout):
 
     def do_filter(self, **kwargs):
         self.content_frame.do_filter(**kwargs)
+
+    def clear_filter(self):
+        self.content_frame.clear_filter()
 
     def on_show(self, pass_data):
 
