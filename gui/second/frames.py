@@ -66,7 +66,7 @@ class SideFrame(widgets.BaseFrame):
         self.has_image.grid(column=0, row=0, sticky='NW')
         self.cb.grid(column=0, row=1)
         self.entry.grid(column=1, row=1)
-        self.submit.grid(column=2, row=1)
+        self.submit.grid(column=0, row=2, columnspan=2)
 
     def submit_filter(self):
 
