@@ -111,6 +111,7 @@ class Engine:
 
         for i in range(self.max_thread):
             t = Thread(target=self.worker)
+            t.daemon = True
             t.start()
             self._thread_tasks.append(t)
 
