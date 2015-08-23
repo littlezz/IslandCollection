@@ -2,10 +2,9 @@ from .. import widgets
 from .. import layouts
 from tkinter import ttk
 import tkinter as tk
-from PIL import Image, ImageTk
+from PIL import Image
 from core.compat import IS_WINDOWS
 from core.structurers import FilterableList, ResultInfo
-import threading
 from gui.threadpool import thread_pool
 from core.engine import engine
 __author__ = 'zz'
@@ -81,9 +80,6 @@ class SideFrame(widgets.BaseFrame):
 
 
 class ContentFrame(widgets.BaseFrame):
-    # def __init__(self, *args, results=None, **kwargs):
-    #     self.results = results
-    #     super().__init__(*args, **kwargs)
 
     def _init(self):
 
@@ -184,7 +180,6 @@ class ContentFrame(widgets.BaseFrame):
             results = results.filter(**{key: value})
 
         self.refresh_result_pannel()
-        # TODO: inject result to content
         self.show_results(results)
 
     def refresh_result_pannel(self):
@@ -207,13 +202,10 @@ class MainFrame(layouts.BaseMainFrameLayout):
         self.content_frame.do_filter(**kwargs)
 
     def on_show(self, pass_data):
-        # self.thread = threading.Thread(target=self.content_frame.test)
-        # self.thread.daemon = True
-        # self.thread.start()
+
         self.thread = thread_pool.submit(self.content_frame.retrieve_result_from_engine)
 
     def on_change(self):
         # TODO: shutdown the engine
-        # thread_pool.shutdown(wait=False)
         engine.shutdown(wait=False)
         self.content_frame.refresh_result_pannel()

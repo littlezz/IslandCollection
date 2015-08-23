@@ -40,10 +40,7 @@ class UrlSelectColumnFrame(ttk.Frame):
         }
         return ret
 
-    # def get_as_task(self):
-    #     """
-    #     :return:
-    #     """
+
 
     def delete(self):
         database.delete_by_id(self.database_id)
