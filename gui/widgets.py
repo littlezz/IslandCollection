@@ -5,6 +5,7 @@ import requests
 from io import BytesIO
 from PIL import Image, ImageTk
 from .threadpool import thread_pool as _thread_pool
+from urllib import parse
 __author__ = 'zz'
 
 
@@ -63,6 +64,16 @@ class Button(HelpTextMixin, ttk.Button):
 
 class Entry(HelpTextMixin, StringVarMixin, ttk.Entry):
     pass
+
+
+class UrlEntry(Entry):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.var.trace('w', self._unquote_text)
+
+    def _unquote_text(self, *args):
+        self.var.set(parse.unquote(self.var.get()))
+
 
 
 class NumberEntry(HelpTextMixin, VarGetSetMixin, ttk.Entry):

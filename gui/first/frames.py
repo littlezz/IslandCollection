@@ -1,5 +1,5 @@
 from tkinter import ttk
-from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, InfoLabel, Button
+from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, InfoLabel, Button, UrlEntry
 from gui.layouts import BaseMainFrameLayout
 from core import database
 from functools import partial
@@ -16,7 +16,7 @@ class UrlSelectColumnFrame(ttk.Frame):
         super().__init__(master, **kw)
         self.database_id = id
         self.check_button = CheckButton(self, value=is_using, help_text='是否启用')
-        self.url_text = Entry(self, width=50, value=url, help_text='url!!!!')
+        self.url_text = UrlEntry(self, width=50, value=url, help_text='url!!!!')
         self.response_num_text = NumberEntry(self, width=5, value=response_gt, help_text='最小相应数')
         self.max_page_text = NumberEntry(self, width=5, value=max_page, help_text='最大搜索页数')
         self.delete_button = Button(self, text='Delete', command=self.delete, help_text='删除')
