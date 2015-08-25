@@ -11,9 +11,15 @@ class BaseTestFrame(ttk.Frame):
             master = self._master
         super().__init__(master, **kwargs)
 
-        self.after(3000, self.destroy)
+        self._time_set = False
         self.pack()
         self.test()
+        if not self._time_set:
+            self.set_destroy_time(1500)
+
+    def set_destroy_time(self, ms):
+        self._time_set = True
+        self.after(ms, self.destroy)
 
     def test(self):
         raise NotImplementedError
@@ -67,7 +73,17 @@ class Test4(BaseTestFrame):
 
         r = ResultInfo(text='test', link='http://example.com', response_num=20, image_url='https://www.baidu.com/img/bd_logo1.png')
         RowFrame(self, **r.as_dict()).pack()
+        self.set_destroy_time(3500)
 
+
+# test for processbar
+
+class Test5(BaseTestFrame):
+    def test(self):
+        pb = ttk.Progressbar(self, orient=tkinter.HORIZONTAL, mode='determinate')
+        pb.pack()
+        pb.start()
+        self.set_destroy_time(4000)
 
 
 ############ main run test function #########
