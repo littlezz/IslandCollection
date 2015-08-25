@@ -36,7 +36,7 @@ class FrameStack:
         self._now = to
         to.on_show(pass_data)
         # update frame
-        self._root.update()
+        self._root.update_idletasks()
 
 
     def add_frame(self, frame):

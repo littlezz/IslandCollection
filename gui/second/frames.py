@@ -1,5 +1,6 @@
 from .. import widgets
 from .. import layouts
+import queue
 from tkinter import ttk
 import tkinter as tk
 from PIL import Image
@@ -123,6 +124,7 @@ class ContentFrame(widgets.BaseFrame):
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
         self.results = FilterableList()
         self.filter_kwargs = dict()
+        self._queue = queue.Queue()
 
         self.rows = 0
 
@@ -195,12 +197,26 @@ class ContentFrame(widgets.BaseFrame):
         while engine.is_running:
             result = engine.get_one_result()
             if result:
-                self.add_new_result(result)
-                time.sleep(0)
+                self._queue.put(result)
+
             else:
                 time.sleep(0.5)
 
+        self._queue.put(None)
         self.master.progressbar_stop()
+
+    def communicate_for_get_result(self):
+        while True:
+            try:
+                result = self._queue.get_nowait()
+                if result is None:
+                    return
+
+                self.add_new_result(result)
+            except queue.Empty:
+                break
+
+        self.after(500, self.communicate_for_get_result)
 
 
     def do_filter(self, **kwargs):
@@ -229,6 +245,12 @@ class ContentFrame(widgets.BaseFrame):
 
         self.rows = 0
 
+    def clear(self):
+
+        for c in self.winfo_children():
+            c.destroy()
+        self._init()
+
 
 class MainFrame(layouts.BaseMainFrameLayout):
     def _init(self):
@@ -248,11 +270,12 @@ class MainFrame(layouts.BaseMainFrameLayout):
     def on_show(self, pass_data):
 
         self.thread = thread_pool.submit(self.content_frame.retrieve_result_from_engine)
+        self.content_frame.after(0, self.content_frame.communicate_for_get_result)
 
     def on_change(self):
         # TODO: shutdown the engine
         engine.shutdown(wait=False)
-        self.content_frame.refresh_result_pannel()
+        self.content_frame.clear()
 
     def progressbar_start(self):
         self.foot_frame.progressbar_start()
