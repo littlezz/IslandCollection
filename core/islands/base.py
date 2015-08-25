@@ -2,6 +2,7 @@ from collections import namedtuple
 import re
 from urllib import parse
 from bs4 import BeautifulSoup
+from core import sanitize
 from core.structurers import ResultInfo
 __author__ = 'zz'
 
@@ -144,6 +145,7 @@ class BaseIsland(metaclass=IslandMeta):
             response_num = int(self.get_div_response_num(tip))
             link = self.complete_link(self.get_div_link(tip))
             text = self.get_div_content_text(tip)
+            text = sanitize.clean(text)
             image_url = self.get_div_image(tip) if self.show_image else ''
             # image_url = self.complete_link(image_url)
 
