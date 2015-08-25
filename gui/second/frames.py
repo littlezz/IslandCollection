@@ -74,7 +74,17 @@ class SideFrame(widgets.BaseFrame):
         self.image_only.grid(column=0, row=0, sticky='NW')
         self.cb.grid(column=0, row=1)
         self.entry.grid(column=1, row=1)
-        self.submit.grid(column=0, row=2, columnspan=2)
+        self.submit.grid(column=0, row=2, columnspan=1)
+
+        self.reset_button = widgets.Button(self, text='reset', command=self._on_reset)
+        self.reset_button.grid(column=1, row=2)
+
+
+    def _on_reset(self):
+        self.entry.set('')
+        self.cb.set('')
+        self.image_only.set(0)
+        self.master.clear_filter()
 
     def submit_filter(self):
 
