@@ -122,6 +122,9 @@ class ContentFrame(widgets.BaseFrame):
         self.canvas.create_window((0, 0), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+        self._once_init()
+
+    def _once_init(self):
         self.results = FilterableList()
         self.filter_kwargs = dict()
         self._queue = queue.Queue()
@@ -247,9 +250,10 @@ class ContentFrame(widgets.BaseFrame):
 
     def clear(self):
 
-        for c in self.winfo_children():
+        for c in self.frame.winfo_children():
             c.destroy()
-        self._init()
+        self._once_init()
+
 
 
 class MainFrame(layouts.BaseMainFrameLayout):
@@ -269,13 +273,12 @@ class MainFrame(layouts.BaseMainFrameLayout):
 
     def on_show(self, pass_data):
 
+        self.content_frame.clear()
         self.thread = thread_pool.submit(self.content_frame.retrieve_result_from_engine)
-        self.content_frame.after(0, self.content_frame.communicate_for_get_result)
+        self.content_frame.after(200, self.content_frame.communicate_for_get_result)
 
     def on_change(self):
-        # TODO: shutdown the engine
         engine.shutdown(wait=False)
-        self.content_frame.clear()
 
     def progressbar_start(self):
         self.foot_frame.progressbar_start()
