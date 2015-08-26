@@ -2,12 +2,13 @@ import tkinter
 from gui import first, second
 from gui import widgets
 from gui.layouts import FrameStack
+from core.database import connect_to_db
 
 __author__ = 'zz'
 
 
 
-
+connect_to_db()
 
 root = widgets.RootTk()
 root.title('Island Collections')

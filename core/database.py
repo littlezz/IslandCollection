@@ -16,6 +16,7 @@ class BaseModel(Model):
     class Meta:
         database = db
 
+
 class Tasks(BaseModel):
     url = CharField(max_length=255)
     response_gt = IntegerField()

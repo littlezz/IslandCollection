@@ -115,6 +115,11 @@ class ContentFrame(BaseFrame):
 
         tasks = database.get_all()
 
+        # if there is no tasks in database , show one line
+        if not tasks.exists():
+            self.add_content_row()
+            return
+
         for t in tasks:
             # TODO:fix this
             t.pop('create_time')
