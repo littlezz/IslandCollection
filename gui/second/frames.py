@@ -21,7 +21,7 @@ class RowFrame(ttk.Frame):
         self.image_fp = kwargs.pop('image_fp', None)
         self.text = kwargs.pop('text', '')
         self.link = kwargs.pop('link', '')
-        self.response_num = kwargs.pop('response_num', 0)
+        self.response_num = int(kwargs.pop('response_num', 0))
         super().__init__(master, **kwargs)
 
 
@@ -29,10 +29,12 @@ class RowFrame(ttk.Frame):
 
         self.link_label = widgets.HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
         self.text_label = ttk.Label(self, text=self.text, width=50, wraplength=400)
+        self.response_num_label = ttk.Label(self, text='response ' + str(self.response_num))
 
         self.image_frame.grid(column=0, row=0, rowspan=2)
         self.link_label.grid(column=1, row=0, sticky='NW')
-        self.text_label.grid(column=1, row=1, sticky='NW')
+        self.response_num_label.grid(column=2, row=0, sticky='NW')
+        self.text_label.grid(column=1, row=1, sticky='NW', columnspan=2)
 
         self.separator = ttk.Separator(self, orient=tk.HORIZONTAL)
         self.separator.grid(column=0, row=2, columnspan=2, sticky='we', pady=7 , padx=25)
@@ -170,7 +172,7 @@ class ContentFrame(widgets.BaseFrame):
         import time
         for i in range(50):
             print(i)
-            im = Image.open('gui/images_test/1t.jpg')
+            im = Image.open('gui/images_test/1.png')
             result = {
                 'image_url': "http://h.nimingban.com/Public/Upload/image/2015-08-18/55d2bff64c32f.jpg",
                 'text': 'the'+str(i) + '0123456789'*20,
@@ -180,17 +182,17 @@ class ContentFrame(widgets.BaseFrame):
             m = i % 3
             if m ==0:
                 result = ResultInfo(**result)
-                self.add_new_result(result)
             elif m==1:
                 result.pop('image_url')
                 result['image_fp'] = im
                 result = ResultInfo(**result)
-                self.add_new_result(result)
             else:
                 result.pop('image_url')
                 result = ResultInfo(**result)
-                self.add_new_result(result)
-            time.sleep(0.5)
+
+            self._queue.put(result)
+
+        self._queue.put(None)
 
     def retrieve_result_from_engine(self):
         import time
