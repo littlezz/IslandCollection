@@ -69,8 +69,13 @@ class SideFrame(widgets.BaseFrame):
                                               command=self.image_only_command)
 
         self.cb = widgets.ExtraDataComboBox(self,
-                                            values_pair=(('link contain', 'link__contain'), ('content contain', 'text__contain')),
-                                            help_text='filter type')
+                                            values_pair=(('link contain', 'link__contain'),
+                                                         ('内容包含', 'text__contain'),
+                                                         ('响应数大于', 'response_num__gt'),
+                                                         ('响应数小于', 'response_num__lt')
+                                                         ),
+                                            help_text='filter type', state='readonly')
+
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
 
@@ -115,7 +120,7 @@ class ContentFrame(widgets.BaseFrame):
 
         # FIXME: make the canvas auto fit the width
         # scrollable content
-        self.canvas = tk.Canvas(self, height=500, width=500)
+        self.canvas = tk.Canvas(self, height=570, width=510)
         self.frame = ttk.Frame(self.canvas)
         self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vbs.set)
