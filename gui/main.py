@@ -11,7 +11,8 @@ __author__ = 'zz'
 
 root = widgets.RootTk()
 root.title('Island Collections')
-root.minsize(width=666, height=666)
+# root.minsize(width=666, height=666)
+root.geometry("900x640")
 
 fs = FrameStack(root=root)
 
