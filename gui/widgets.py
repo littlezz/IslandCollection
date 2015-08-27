@@ -185,15 +185,15 @@ class BaseRowFrame(ttk.Frame):
 
         self.link_label = HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
         self.text_label = ttk.Label(self, text=self.text, width=self._text_width, wraplength=self._text_wraplength)
-        self.response_num_label = ttk.Label(self, text='response ' + str(self.response_num))
+        self.response_num_label = ttk.Label(self, text='replies: ' + str(self.response_num))
 
         self.image_frame.grid(column=0, row=0, rowspan=2)
-        self.link_label.grid(column=1, row=0, sticky='NW')
+        self.link_label.grid(column=1, row=0, sticky='N')
         self.response_num_label.grid(column=2, row=0, sticky='NW')
         self.text_label.grid(column=1, row=1, sticky='NW', columnspan=2)
 
         self.separator = ttk.Separator(self, orient=tkinter.HORIZONTAL)
-        self.separator.grid(column=0, row=2, columnspan=2, sticky='we', pady=7, padx=25)
+        self.separator.grid(column=0, row=2, columnspan=3, sticky='we', pady=7, padx=25)
 
     @property
     def has_image(self):

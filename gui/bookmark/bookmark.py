@@ -47,18 +47,23 @@ class BookAddFrame(widgets.BaseFrame):
 
 
 class BookmarkRow(widgets.BaseRowFrame):
-    _text_width = 50
-    _text_wraplength = 400
+    _text_width = 65
+    _text_wraplength = 500
 
     def __init__(self, *args, **kwargs):
         self.database_id = kwargs.pop('id', None)
         super().__init__(*args, **kwargs)
+        self.delete_button = widgets.Button(self, text='-', width=2, command=self.delete)
+        self.delete_button.grid(column=3, row=0, sticky='nw')
 
+    def delete(self):
+        Bookmark.delete_by_id(self.database_id)
+        self.destroy()
 
 
 class BookmarkView(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
-    canvas_height = 500
-    canvas_width = 800
+    canvas_height = 590
+    canvas_width = 860
 
     def _init(self):
         super()._init()
