@@ -1,8 +1,7 @@
 from tkinter import ttk
-from gui.widgets import CheckButton, Entry, NumberEntry, BaseFrame, InfoLabel, Button, UrlEntry
+from gui.widgets import CheckButton, NumberEntry, BaseFrame, InfoLabel, Button, UrlEntry
 from gui.layouts import BaseMainFrameLayout
-from core import database
-from functools import partial
+from core.database import Tasks
 from core import analyzer
 from core.engine import engine
 __author__ = 'zz'
@@ -49,7 +48,7 @@ class UrlSelectColumnFrame(ttk.Frame):
 
 
     def delete(self):
-        database.delete_by_id(self.database_id)
+        Tasks.delete_by_id(self.database_id)
         self.destroy()
 
     def show_help_text(self, event):
@@ -113,7 +112,7 @@ class ContentFrame(BaseFrame):
         :return:None
         """
 
-        tasks = database.get_all()
+        tasks = Tasks.get_all()
 
         # if there is no tasks in database , show one line
         if not tasks.exists():
@@ -134,7 +133,7 @@ class ContentFrame(BaseFrame):
         for index, row in enumerate(self.children.values()):
             task = row.get_as_dict()
             if self.validate_task(row, task):
-                is_success = database.create_or_update_data(task)
+                is_success = Tasks.create_or_update_data(task)
                 # TODO: resolve not success
                 if not is_success:
                     info = 'fail'
