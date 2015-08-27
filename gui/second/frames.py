@@ -4,7 +4,6 @@ import queue
 from tkinter import ttk
 import tkinter as tk
 from PIL import Image
-from core.compat import IS_WINDOWS
 from core.structurers import FilterableList, ResultInfo
 from gui.threadpool import thread_pool
 from core.engine import engine
@@ -114,21 +113,13 @@ class SideFrame(widgets.BaseFrame):
             self.master.clear_filter()
 
 
-class ContentFrame(widgets.BaseFrame):
+class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
+    canvas_height = 570
+    canvas_width = 550
 
     def _init(self):
 
-        # FIXME: make the canvas auto fit the width
-        # scrollable content
-        self.canvas = tk.Canvas(self, height=570, width=550)
-        self.frame = ttk.Frame(self.canvas)
-        self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
-        self.canvas.configure(yscrollcommand=self.vbs.set)
-        self.vbs.pack(side='right', fill='y')
-        self.canvas.pack(side='left', fill='both', expand=True)
-        self.canvas.create_window((0, 0), window=self.frame, anchor='nw', tag='self.frame')
-        self.frame.bind('<Configure>', self.on_frame_configure)
-        self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+
         self._once_init()
 
     def _once_init(self):
@@ -164,14 +155,7 @@ class ContentFrame(widgets.BaseFrame):
 
 
 
-    def on_frame_configure(self, e):
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
-    def _on_mousewheel(self, e):
-        if IS_WINDOWS:
-            self.canvas.yview_scroll(-int(e.delta/120), 'units')
-        else:
-            self.canvas.yview_scroll(-e.delta, 'units')
 
     def test(self):
         import time

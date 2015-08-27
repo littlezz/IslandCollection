@@ -4,6 +4,7 @@ import webbrowser
 import requests
 from io import BytesIO
 from PIL import Image, ImageTk
+from core.compat import IS_WINDOWS
 from .threadpool import thread_pool as _thread_pool
 from urllib import parse
 __author__ = 'zz'
@@ -178,3 +179,32 @@ class RootTk(tkinter.Tk):
     def on_closing(self):
         _thread_pool.shutdown(wait=False)
         self.destroy()
+
+
+class ScrollbarCanvasMixin(BaseFrame):
+    canvas_height = 570
+    canvas_width = 550
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.canvas = tkinter.Canvas(self, height=self.canvas_height, width=self.canvas_width)
+        self.frame = ttk.Frame(self.canvas)
+        self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
+        self.canvas.configure(yscrollcommand=self.vbs.set)
+        self.vbs.pack(side='right', fill='y')
+        self.canvas.pack(side='left', fill='both', expand=True)
+        self.canvas.create_window((0, 0), window=self.frame, anchor='nw', tag='self.frame')
+        self.frame.bind('<Configure>', self.on_frame_configure)
+        self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+
+
+    def on_frame_configure(self, e):
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+
+    def _on_mousewheel(self, e):
+        if IS_WINDOWS:
+            self.canvas.yview_scroll(-int(e.delta/120), 'units')
+        else:
+            self.canvas.yview_scroll(-e.delta, 'units')
+
