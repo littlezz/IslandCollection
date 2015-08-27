@@ -49,11 +49,11 @@ class BaseIsland(metaclass=IslandMeta):
     json_data = False
     show_image = True
 
-    def __init__(self, current_url, res):
-        if not self.json_data:
-            self.pd = BeautifulSoup(res.content)
-        else:
+    def __init__(self, current_url, res, is_json=False):
+        if self.json_data or is_json:
             self.pd = res.json()
+        else:
+            self.pd = BeautifulSoup(res.content)
 
         self.current_url = current_url
 
@@ -180,3 +180,31 @@ class BaseIsland(metaclass=IslandMeta):
         return start_url
 
 
+
+    @staticmethod
+    def _pre_process(res):
+        return res
+
+    @classmethod
+    def _thread_res_to_tip(cls, res):
+            """
+            turn res to simple tip, default return res.json()
+            :param res:
+            :return:
+            """
+            return res.json()['threads']
+
+
+    @classmethod
+    def get_thread_info(cls, url, res):
+        obj = cls(url, res)
+        tip = cls._thread_res_to_tip(res)
+
+        text = sanitize.clean(obj.get_div_content_text(tip))
+        link = obj.get_div_link(tip)
+        response_num = int(obj.get_div_response_num(tip))
+        image_url = obj.get_div_image(tip) if obj.show_image else ''
+
+        result = ResultInfo(text=text, link=link, response_num=response_num, image_url=image_url)
+
+        return result

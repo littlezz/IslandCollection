@@ -69,3 +69,10 @@ class Analyzer:
         return self._island.next_page(self.max_page, current_page_url)
 
 
+def get_thread_info(url, res):
+    island_class = island_class_table[determine_island_name(url)]
+    info = island_class.get_thread_info(url, res)
+    return info
+
+
+
