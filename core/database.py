@@ -64,10 +64,10 @@ class Tasks(BaseModel):
 
 @register_cls_method(methods=_all_cls_methods)
 class Bookmark(BaseModel):
-    url = CharField(max_length=255)
+    link = CharField(max_length=255)
     response_num = IntegerField()
-    content = TextField()
-    image_path = CharField(max_length=255)
+    text = TextField()
+    image_path = CharField(max_length=255, null=True)
 
     
     def has_image(self):
@@ -79,8 +79,7 @@ class Bookmark(BaseModel):
 
 def connect_to_db():
     db.connect()
-    db.create_tables([Tasks], True)
-
+    db.create_tables([Tasks, Bookmark], True)
 
 
 

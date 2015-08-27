@@ -185,8 +185,7 @@ class ScrollbarCanvasMixin(BaseFrame):
     canvas_height = 570
     canvas_width = 550
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def _init(self):
 
         self.canvas = tkinter.Canvas(self, height=self.canvas_height, width=self.canvas_width)
         self.frame = ttk.Frame(self.canvas)
@@ -197,7 +196,6 @@ class ScrollbarCanvasMixin(BaseFrame):
         self.canvas.create_window((0, 0), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
         self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
-
 
     def on_frame_configure(self, e):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))

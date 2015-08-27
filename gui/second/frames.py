@@ -119,7 +119,7 @@ class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
 
     def _init(self):
 
-
+        super()._init()
         self._once_init()
 
     def _once_init(self):

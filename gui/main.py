@@ -1,5 +1,5 @@
 from tkinter import ttk
-from gui import first, second
+from gui import first, second, bookmark
 from gui import widgets
 from gui.layouts import FrameStack
 from core.database import connect_to_db
@@ -19,7 +19,7 @@ root.geometry("900x680")
 notebook = ttk.Notebook(root, padding=2)
 
 search_frame = ttk.Frame(notebook)
-book_frame = ttk.Frame(notebook)
+book_frame = bookmark.MainFrame(notebook)
 notebook.add(search_frame, text='主程序')
 notebook.add(book_frame, text='收藏夹')
 
