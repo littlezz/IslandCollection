@@ -28,7 +28,7 @@ class RowFrame(ttk.Frame):
         self.image_frame = widgets.ImageFrame(self, image_url=self.image_url, image_fp=self.image_fp)
 
         self.link_label = widgets.HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
-        self.text_label = ttk.Label(self, text=self.text, width=40, wraplength=300)
+        self.text_label = ttk.Label(self, text=self.text, width=44, wraplength=345)
         self.response_num_label = ttk.Label(self, text='response ' + str(self.response_num))
 
         self.image_frame.grid(column=0, row=0, rowspan=2)
@@ -74,7 +74,7 @@ class SideFrame(widgets.BaseFrame):
                                                          ('响应数大于', 'response_num__gt'),
                                                          ('响应数小于', 'response_num__lt')
                                                          ),
-                                            help_text='filter type', state='readonly')
+                                            help_text='filter type', state='readonly', width=10)
 
         self.entry = widgets.Entry(self, help_text='filter args')
         self.submit = widgets.Button(self, text='filter', command=self.submit_filter)
@@ -120,7 +120,7 @@ class ContentFrame(widgets.BaseFrame):
 
         # FIXME: make the canvas auto fit the width
         # scrollable content
-        self.canvas = tk.Canvas(self, height=570, width=510)
+        self.canvas = tk.Canvas(self, height=570, width=550)
         self.frame = ttk.Frame(self.canvas)
         self.vbs = ttk.Scrollbar(self, orient='vertical', command=self.canvas.yview)
         self.canvas.configure(yscrollcommand=self.vbs.set)
