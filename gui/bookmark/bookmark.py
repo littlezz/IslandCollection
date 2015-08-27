@@ -25,6 +25,13 @@ class BookAddFrame(widgets.BaseFrame):
 
 
 
+class BookmarkRow(widgets.BaseRowFrame):
+    _text_width = 50
+    _text_wraplength = 400
+
+    def __init__(self, *args, **kwargs):
+        self.database_id = kwargs.pop('id', None)
+        super().__init__(*args, **kwargs)
 
 
 
@@ -46,12 +53,12 @@ class BookmarkView(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
 
     def add_one_row(self, **kwargs):
         image_path = kwargs.pop('image_path', '')
-        kwargs.pop('id')
+
         if image_path and os.path.exists(image_path):
             image_fp = Image.open(image_path)
-            kwargs.update('image_fp', image_fp)
+            kwargs.update(image_fp=image_fp)
 
-        r = RowFrame(self.frame, **kwargs)
+        r = BookmarkRow(self.frame, **kwargs)
         r.grid(column=0, row=self.rows)
         self.rows += 1
 

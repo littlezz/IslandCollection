@@ -111,6 +111,7 @@ class ImageFrame(ttk.Frame):
     def __init__(self, *args, **kwargs):
         self.image_url = kwargs.pop('image_url', None)
         self.image_fp = kwargs.pop('image_fp', None)
+        self.save_to = kwargs.pop('save_to', None)
         kwargs.update({
             'height':self.height,
             'width': self.width
@@ -137,7 +138,12 @@ class ImageFrame(ttk.Frame):
         data = requests.get(self.image_url).content
         fp = BytesIO(data)
         im = Image.open(fp)
+
         im.thumbnail((self.width, self.height))
+
+        if self.save_to:
+            im.save(self.save_to)
+
         im = ImageTk.PhotoImage(im)
         self.label.image = im
         self.label.configure(image=im)
@@ -159,6 +165,41 @@ class ExtraDataComboBox(HelpTextMixin, ttk.Combobox):
     def get(self):
         value = super().get()
         return self._maps[value]
+
+
+
+class BaseRowFrame(ttk.Frame):
+    _text_width = 44
+    _text_wraplength = 345
+
+    def __init__(self, master, **kwargs):
+        self.image_url = kwargs.pop('image_url', None)
+        self.image_fp = kwargs.pop('image_fp', None)
+        self.text = kwargs.pop('text', '')
+        self.link = kwargs.pop('link', '')
+        self.response_num = int(kwargs.pop('response_num', 0))
+        self.image_save_to = kwargs.pop('image_save_to', None)
+        super().__init__(master, **kwargs)
+
+        self.image_frame = ImageFrame(self, image_url=self.image_url, image_fp=self.image_fp, save_to=self.image_save_to)
+
+        self.link_label = HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
+        self.text_label = ttk.Label(self, text=self.text, width=self._text_width, wraplength=self._text_wraplength)
+        self.response_num_label = ttk.Label(self, text='response ' + str(self.response_num))
+
+        self.image_frame.grid(column=0, row=0, rowspan=2)
+        self.link_label.grid(column=1, row=0, sticky='NW')
+        self.response_num_label.grid(column=2, row=0, sticky='NW')
+        self.text_label.grid(column=1, row=1, sticky='NW', columnspan=2)
+
+        self.separator = ttk.Separator(self, orient=tkinter.HORIZONTAL)
+        self.separator.grid(column=0, row=2, columnspan=2, sticky='we', pady=7, padx=25)
+
+    @property
+    def has_image(self):
+        return True if self.image_url or self.image_fp else False
+
+
 
 
 

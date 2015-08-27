@@ -71,8 +71,8 @@ class Analyzer:
 
 def get_thread_info(url, res):
     island_class = island_class_table[determine_island_name(url)]
-    info = island_class.get_thread_info(url, res)
-    return info
+    info_result = island_class.get_thread_info(url, res)
+    return info_result
 
 
 

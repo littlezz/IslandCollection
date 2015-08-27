@@ -12,35 +12,11 @@ __author__ = 'zz'
 
 
 
-class RowFrame(ttk.Frame):
-    _width = 600
-    _height = 200
-    def __init__(self, master, **kwargs):
-        self.image_url = kwargs.pop('image_url', None)
-        self.image_fp = kwargs.pop('image_fp', None)
-        self.text = kwargs.pop('text', '')
-        self.link = kwargs.pop('link', '')
-        self.response_num = int(kwargs.pop('response_num', 0))
-        super().__init__(master, **kwargs)
+class RowFrame(widgets.BaseRowFrame):
+    _text_width = 44
+    _text_wraplength = 345
 
 
-        self.image_frame = widgets.ImageFrame(self, image_url=self.image_url, image_fp=self.image_fp)
-
-        self.link_label = widgets.HyperLabel(self, text=self.link, link=self.link, cursor='hand2', foreground='blue')
-        self.text_label = ttk.Label(self, text=self.text, width=44, wraplength=345)
-        self.response_num_label = ttk.Label(self, text='response ' + str(self.response_num))
-
-        self.image_frame.grid(column=0, row=0, rowspan=2)
-        self.link_label.grid(column=1, row=0, sticky='NW')
-        self.response_num_label.grid(column=2, row=0, sticky='NW')
-        self.text_label.grid(column=1, row=1, sticky='NW', columnspan=2)
-
-        self.separator = ttk.Separator(self, orient=tk.HORIZONTAL)
-        self.separator.grid(column=0, row=2, columnspan=2, sticky='we', pady=7 , padx=25)
-
-    @property
-    def has_image(self):
-        return True if self.image_url or self.image_fp else False
 
 
 class FootFrame(widgets.BaseFrame):
