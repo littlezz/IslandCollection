@@ -1,14 +1,19 @@
 from tkinter import ttk
 import tkinter as tk
 from .. import widgets
-from ..second.frames import RowFrame
 from PIL import Image
 from core.database import Bookmark
 import os.path
+import requests
+from core import analyzer
 
 __author__ = 'zz'
 
+
+
 class BookAddFrame(widgets.BaseFrame):
+    save_to_prefix = 'gui/cache'
+
     def _init(self):
         self.url_label = ttk.Label(self, text='Url')
         self.url_entry = widgets.Entry(self)
@@ -20,8 +25,24 @@ class BookAddFrame(widgets.BaseFrame):
 
 
     def add_bookmark(self):
-        pass
+        url = self.url_entry.get()
+        req = requests.get(url)
+        result = analyzer.get_thread_info(url, req)
 
+        kwargs = result.as_dict()
+        query = kwargs.copy()
+
+        if result.has_image:
+            image_name = result.image_url.rsplit('/', 1)[-1]
+            path = os.path.join(self.save_to_prefix, image_name)
+            kwargs.update(image_save_to=path)
+            query.update(image_path=path)
+
+        query.pop('image_url', '')
+        query.pop('image_fp', '')
+        Bookmark.create(**query)
+
+        self.master.add_bookmark(**kwargs)
 
 
 
@@ -48,16 +69,15 @@ class BookmarkView(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
         bs = Bookmark.get_all()
         if bs.exists():
             for row_info in bs:
+                image_path = row_info.pop('image_path', '')
+                if image_path and os.path.exists(image_path):
+                    image_fp = Image.open(image_path)
+                    row_info.update(image_fp=image_fp)
+
                 self.add_one_row(**row_info)
 
 
     def add_one_row(self, **kwargs):
-        image_path = kwargs.pop('image_path', '')
-
-        if image_path and os.path.exists(image_path):
-            image_fp = Image.open(image_path)
-            kwargs.update(image_fp=image_fp)
-
         r = BookmarkRow(self.frame, **kwargs)
         r.grid(column=0, row=self.rows)
         self.rows += 1
@@ -72,6 +92,8 @@ class MainFrame(widgets.BaseFrame):
         self.add_frame.grid(column=0, row=0)
         self.book_view.grid(column=0, row=1)
 
+    def add_bookmark(self, **kwargs):
+        self.book_view.add_one_row(**kwargs)
 
 
 
