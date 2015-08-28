@@ -54,6 +54,9 @@ class BookmarkRow(widgets.BaseRowFrame):
     def __init__(self, *args, **kwargs):
         self.database_id = kwargs.pop('id', None)
         super().__init__(*args, **kwargs)
+
+    def create_widgets(self):
+        super().create_widgets()
         self.delete_button = widgets.Button(self, text='-', width=2, command=self.delete)
         self.delete_button.grid(column=3, row=0, sticky='nw')
 
@@ -97,6 +100,8 @@ class MainFrame(widgets.BaseFrame):
 
         self.add_frame.grid(column=0, row=0)
         self.book_view.grid(column=0, row=1)
+
+        self.book_view.bind_class_mousewheel('BookmarkRow')
 
     def add_bookmark(self, **kwargs):
         self.book_view.add_one_row(**kwargs)

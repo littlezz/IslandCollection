@@ -26,6 +26,7 @@ class FootFrame(widgets.BaseFrame):
 
         self.progressbar.grid(column=0, row=0, sticky='we')
         self.button.grid(column=0, row=1)
+
     def set_button_command(self, command):
         self.button.configure(command=command)
 
@@ -230,7 +231,7 @@ class MainFrame(layouts.BaseMainFrameLayout):
         self.foot_frame = FootFrame(self)
 
         self.foot_frame.button.configure(command=self.previous_frame)
-
+        self.content_frame.bind_class_mousewheel('RowFrame')
 
     def do_filter(self, **kwargs):
         self.content_frame.do_filter(**kwargs)

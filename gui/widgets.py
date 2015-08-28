@@ -167,6 +167,9 @@ class ExtraDataComboBox(HelpTextMixin, ttk.Combobox):
         return self._maps[value]
 
 
+def retags(w, tag):
+    w.bindtags((tag, ) + w.bindtags())
+
 
 class BaseRowFrame(ttk.Frame):
     _text_width = 44
@@ -179,7 +182,15 @@ class BaseRowFrame(ttk.Frame):
         self.link = kwargs.pop('link', '')
         self.response_num = int(kwargs.pop('response_num', 0))
         self.image_save_to = kwargs.pop('image_save_to', None)
+
+        kwargs['class_'] = self.__class__.__name__
         super().__init__(master, **kwargs)
+
+        self.create_widgets()
+        for w in self.winfo_children():
+            retags(w, kwargs['class_'])
+
+    def create_widgets(self):
 
         self.image_frame = ImageFrame(self, image_url=self.image_url, image_fp=self.image_fp, save_to=self.image_save_to)
 
@@ -236,7 +247,9 @@ class ScrollbarCanvasMixin(BaseFrame):
         self.canvas.pack(side='left', fill='both', expand=True)
         self.canvas.create_window((0, 0), window=self.frame, anchor='nw', tag='self.frame')
         self.frame.bind('<Configure>', self.on_frame_configure)
-        self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+        # self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
+        self.canvas.bind('<MouseWheel>', self._on_mousewheel)
+        self.frame.bind('<MouseWheel>', self._on_mousewheel)
 
     def on_frame_configure(self, e):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -247,3 +260,5 @@ class ScrollbarCanvasMixin(BaseFrame):
         else:
             self.canvas.yview_scroll(-e.delta, 'units')
 
+    def bind_class_mousewheel(self, class_name):
+        self.bind_class(class_name, '<MouseWheel>', self._on_mousewheel)
