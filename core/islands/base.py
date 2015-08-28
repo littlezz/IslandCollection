@@ -198,6 +198,7 @@ class BaseIsland(metaclass=IslandMeta):
     @classmethod
     def get_thread_info(cls, url, res):
         obj = cls(url, res)
+        print(url, res)
         tip = cls._thread_res_to_tip(res)
 
         text = sanitize.clean(obj.get_div_content_text(tip))

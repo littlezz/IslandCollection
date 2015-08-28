@@ -30,10 +30,12 @@ class NiMingBanIsland(NextPageJsonParameterMixin, BaseIsland):
 
     @staticmethod
     def init_start_url(start_url:str):
-        # if '.json' not in start_url:
-        #     parts = parse.urlsplit(start_url)
-        #     path = parts.path + '.json'
-        #     return parse.urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+
         if '/f/' in start_url:
             start_url = start_url.replace('/f/', '/api/')
+        elif '/api/' not in start_url:
+            parts = parse.urlsplit(start_url)
+            path = '/api' + parts.path
+            start_url = parse.urlunsplit((parts.scheme, parts.netloc, path, parts.query, parts.fragment))
+
         return start_url

@@ -26,6 +26,7 @@ class BookAddFrame(widgets.BaseFrame):
 
     def add_bookmark(self):
         url = self.url_entry.get()
+        url = analyzer.init_start_url(url)
         req = requests.get(url)
         result = analyzer.get_thread_info(url, req)
 
@@ -62,8 +63,8 @@ class BookmarkRow(widgets.BaseRowFrame):
 
 
 class BookmarkView(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
-    canvas_height = 590
-    canvas_width = 860
+    canvas_height = 550
+    canvas_width = 850
 
     def _init(self):
         super()._init()
