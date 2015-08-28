@@ -5,12 +5,13 @@ from core.database import Bookmark
 import os.path
 import requests
 from core import analyzer
+from core import settings
 
 __author__ = 'zz'
 
 
 class BookAddFrame(widgets.BaseFrame):
-    save_to_prefix = 'gui/cache'
+    save_to_prefix = settings.IMAGE_CACHE_PATH
 
     def _init(self):
         self.url_label = ttk.Label(self, text='Url')
