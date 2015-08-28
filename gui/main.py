@@ -3,16 +3,19 @@ from gui import first, second, bookmark
 from gui import widgets
 from gui.layouts import FrameStack
 from core.database import connect_to_db
+import os
 
 __author__ = 'zz'
 
 
-
+# prepare
 connect_to_db()
+# try:
+#     os.mkdir('gui/cache')
+
 
 root = widgets.RootTk()
 root.title('Island Collections')
-# root.minsize(width=666, height=666)
 root.geometry("900x680")
 
 

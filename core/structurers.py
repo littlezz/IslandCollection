@@ -104,6 +104,5 @@ class ResultInfo:
     def has_image(self):
         return True if self.image_url or self.image_fp else False
 
-
     def as_dict(self):
         return self.__dict__

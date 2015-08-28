@@ -22,13 +22,11 @@ class FrameStack:
         to = self._frames[index-1]
         self.change_frame(now, to, pass_data)
 
-
     def next_frame(self, pass_data):
         now = self._now
         index = self._frames.index(now)
         to = self._frames[index+1]
         self.change_frame(now, to, pass_data)
-
 
     def change_frame(self, now, to, pass_data):
         now.grid_forget()
@@ -37,7 +35,6 @@ class FrameStack:
         to.on_show(pass_data)
         # update frame
         self._root.update_idletasks()
-
 
     def add_frame(self, frame):
         self._frames.append(frame)
@@ -52,7 +49,6 @@ class FrameStack:
 
         if not self._now.grid_info():
             self._now.grid(**self._now.get_grid_kwargs())
-
 
 
 class BaseMainFrameLayout(BaseFrame):

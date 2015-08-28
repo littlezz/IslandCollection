@@ -7,9 +7,6 @@ from core.engine import engine
 __author__ = 'zz'
 
 
-
-
-
 class UrlSelectColumnFrame(ttk.Frame):
     def __init__(self, master=None, id=None, url='', response_gt=None, max_page=None, is_using=True, **kw):
         super().__init__(master, **kw)
@@ -35,7 +32,7 @@ class UrlSelectColumnFrame(ttk.Frame):
             'response_gt': self.response_num_text.get(),
             'max_page': self.max_page_text.get(),
             'is_using': self.check_button.get(),
-            'id':self.database_id,
+            'id': self.database_id,
         }
         return ret
 
@@ -44,8 +41,6 @@ class UrlSelectColumnFrame(ttk.Frame):
         :return: If Checkbutton is pressed
         """
         return True if self.check_button.get() else False
-
-
 
     def delete(self):
         Tasks.delete_by_id(self.database_id)
@@ -82,8 +77,6 @@ class SideFrame(BaseFrame):
     def set_info(self, info):
 
         self.info_label.set(info)
-
-
 
 
 class ContentFrame(BaseFrame):
@@ -149,7 +142,6 @@ class ContentFrame(BaseFrame):
     def set_info(self, info):
         self.master.set_info(info)
 
-
     def validate_task(self, widget, task):
         url = task.get('url')
         status_code = analyzer.validate_url(url)
@@ -182,7 +174,7 @@ class MainFrame(BaseMainFrameLayout):
 
     def next_frame(self):
         # validate there at least have one task
-        if any(row.info_is_using() for row in self.content_frame.children.values() ):
+        if any(row.info_is_using() for row in self.content_frame.children.values()):
             super().next_frame()
         else:
             self.set_info('no task select!')

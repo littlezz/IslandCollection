@@ -13,7 +13,7 @@ Task = namedtuple('Task', ['url', 'response_gt', 'max_page'])
 
 
 def singleton(cls):
-    _instance=None
+    _instance = None
     def wrapper(*args, **kwargs):
         nonlocal _instance
         if not _instance:
@@ -69,7 +69,7 @@ class Engine:
 
     def _init_tasks(self, tasks):
         self.init_tasks = []
-        simple  = tasks[0]
+        simple = tasks[0]
 
         if isinstance(simple, Task):
             for task in tasks:
@@ -96,9 +96,6 @@ class Engine:
 
         self._init()
 
-
-
-
     def start(self):
 
         self._pre_work_running = True
@@ -114,7 +111,6 @@ class Engine:
             t.daemon = True
             t.start()
             self._thread_tasks.append(t)
-
 
     def _generate_tasks(self):
         for task in self.init_tasks:

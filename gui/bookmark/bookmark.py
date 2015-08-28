@@ -1,5 +1,4 @@
 from tkinter import ttk
-import tkinter as tk
 from .. import widgets
 from PIL import Image
 from core.database import Bookmark
@@ -8,7 +7,6 @@ import requests
 from core import analyzer
 
 __author__ = 'zz'
-
 
 
 class BookAddFrame(widgets.BaseFrame):
@@ -44,7 +42,6 @@ class BookAddFrame(widgets.BaseFrame):
         Bookmark.create(**query)
 
         self.master.add_bookmark(**kwargs)
-
 
 
 class BookmarkRow(widgets.BaseRowFrame):
@@ -105,6 +102,5 @@ class MainFrame(widgets.BaseFrame):
 
     def add_bookmark(self, **kwargs):
         self.book_view.add_one_row(**kwargs)
-
 
 

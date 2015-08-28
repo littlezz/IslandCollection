@@ -64,8 +64,3 @@ class Bookmark(BaseModel):
 def connect_to_db():
     db.connect()
     db.create_tables([Tasks, Bookmark], True)
-
-
-
-
-

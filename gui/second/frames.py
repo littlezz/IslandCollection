@@ -63,7 +63,6 @@ class SideFrame(widgets.BaseFrame):
         self.reset_button = widgets.Button(self, text='reset', command=self._on_reset)
         self.reset_button.grid(column=1, row=2)
 
-
     def _on_reset(self):
         self.entry.set('')
         self.cb.set('')
@@ -106,7 +105,6 @@ class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
 
         self.rows = 0
 
-
     def show_results(self, results):
         """
         generate the results
@@ -114,7 +112,6 @@ class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
         """
         for r in results:
             self.show_one_result(r)
-
 
     def show_one_result(self, result:RowFrame):
 
@@ -132,10 +129,7 @@ class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
 
 
 
-
-
     def test(self):
-        import time
         for i in range(50):
             print(i)
             im = Image.open('gui/images_test/1.png')
@@ -221,7 +215,6 @@ class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
         for c in self.frame.winfo_children():
             c.destroy()
         self._once_init()
-
 
 
 class MainFrame(layouts.BaseMainFrameLayout):

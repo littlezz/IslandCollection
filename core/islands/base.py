@@ -27,10 +27,10 @@ class IslandMeta(type):
         if name != 'BaseIsland':
             island_name = ns.get('_island_name')
             island_netloc = ns.get('_island_netloc')
-            assert island_name , 'Not define _island_name in {} class'.format(name)
-            assert island_netloc , 'Not define _island_netloc in {} class'.format(name)
+            assert island_name, 'Not define _island_name in {} class'.format(name)
+            assert island_netloc, 'Not define _island_netloc in {} class'.format(name)
 
-             # register island and netloc
+            # register island and netloc
             island_netloc_table.update({island_netloc: island_name})
 
             # register island class
@@ -53,7 +53,8 @@ class BaseIsland(metaclass=IslandMeta):
         if self.json_data or is_json:
             self.pd = res.json()
         else:
-            self.pd = BeautifulSoup(res.content)
+            # assign the parser, not use lxml
+            self.pd = BeautifulSoup(res.content, "html.parser")
 
         self.current_url = current_url
 
@@ -147,13 +148,11 @@ class BaseIsland(metaclass=IslandMeta):
             text = self.get_div_content_text(tip)
             text = sanitize.clean(text)
             image_url = self.get_div_image(tip) if self.show_image else ''
-            # image_url = self.complete_link(image_url)
 
             result = ResultInfo(text=text, link=link, response_num=response_num, image_url=image_url)
             results.append(result)
 
         return results
-
 
     def complete_link(self, url, root_url=None):
         if not url:
@@ -198,7 +197,6 @@ class BaseIsland(metaclass=IslandMeta):
     @classmethod
     def get_thread_info(cls, url, res):
         obj = cls(url, res)
-        print(url, res)
         tip = cls._thread_res_to_tip(res)
 
         text = sanitize.clean(obj.get_div_content_text(tip))
