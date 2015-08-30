@@ -19,7 +19,7 @@ except FileExistsError:
 
 root = widgets.RootTk()
 root.title('Island Collections')
-root.geometry("900x680")
+root.geometry("900x650")
 
 
 notebook = ttk.Notebook(root, padding=2)

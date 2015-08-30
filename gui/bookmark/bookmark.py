@@ -44,6 +44,9 @@ class BookAddFrame(widgets.BaseFrame):
 
         self.master.add_bookmark(**kwargs)
 
+        # clear entry
+        self.url_entry.set('')
+
 
 class BookmarkRow(widgets.BaseRowFrame):
     _text_width = 65

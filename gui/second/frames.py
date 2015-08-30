@@ -13,8 +13,8 @@ __author__ = 'zz'
 
 
 class RowFrame(widgets.BaseRowFrame):
-    _text_width = 44
-    _text_wraplength = 345
+    _text_width = 50
+    _text_wraplength = 350
 
 
 
@@ -90,7 +90,7 @@ class SideFrame(widgets.BaseFrame):
 
 
 class ContentFrame(widgets.ScrollbarCanvasMixin, widgets.BaseFrame):
-    canvas_height = 570
+    canvas_height = 550
     canvas_width = 550
 
     def _init(self):
