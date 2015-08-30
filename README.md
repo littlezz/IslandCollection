@@ -33,9 +33,10 @@ ScreenShot
 
 Requirements
 ---------------
-python >=3.3
+python >=3.4
 
 peewee >= 2.6.0  
 requests >= 2.7.0  
 Pillow >= 2.9.0  
 beautifulsoup4 >= 4.4.0  
+
