@@ -1,5 +1,5 @@
 from tkinter import ttk
-from gui import first, second, bookmark
+from gui import first, second, bookmark, proxy
 from gui import widgets
 from gui.layouts import FrameStack
 from core.database import connect_to_db
@@ -26,8 +26,11 @@ notebook = ttk.Notebook(root, padding=2)
 
 search_frame = ttk.Frame(notebook)
 book_frame = bookmark.MainFrame(notebook)
+proxy_frame = proxy.ProxyDataView(notebook)
+
 notebook.add(search_frame, text='主程序')
 notebook.add(book_frame, text='收藏夹')
+notebook.add(proxy_frame, text='Proxy')
 
 notebook.pack()
 
