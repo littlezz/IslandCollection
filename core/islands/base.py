@@ -158,6 +158,9 @@ class BaseIsland(metaclass=IslandMeta):
         if not url:
             return ''
 
+        if url.startswith('http'):
+            return url
+
         if root_url is None:
             root_url = self.root_url
 
