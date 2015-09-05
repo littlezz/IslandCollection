@@ -188,7 +188,7 @@ class BaseIsland(metaclass=IslandMeta):
         return res
 
     @classmethod
-    def _thread_res_to_tip(cls, res):
+    def _thread_res_to_tip(cls, res, pd):
             """
             turn res to simple tip, default return res.json()
             :param res:
@@ -197,13 +197,25 @@ class BaseIsland(metaclass=IslandMeta):
             return res.json()['threads']
 
 
+    def get_thread_link(self, tip, url):
+        """
+        get url for bookmark
+        :param tip:
+        :param url: raw url
+        :return: return url, default use self.get_div_link for json default.
+                must rewrite this method for static html island
+        """
+        return self.get_div_link(tip)
+
+
+
     @classmethod
     def get_thread_info(cls, url, res):
         obj = cls(url, res)
-        tip = cls._thread_res_to_tip(res)
+        tip = cls._thread_res_to_tip(res, obj.pd)
 
         text = sanitize.clean(obj.get_div_content_text(tip))
-        link = obj.get_div_link(tip)
+        link = obj.get_thread_link(tip, url)
         response_num = int(obj.get_div_response_num(tip))
         image_url = obj.get_div_image(tip) if obj.show_image else ''
 

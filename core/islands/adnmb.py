@@ -1,6 +1,7 @@
 from core.islands.base import BaseIsland
 from core.islands.mixins import NextPageStaticHtmlMixin
 from urllib.parse import urldefrag
+from core import sanitize
 
 __author__ = 'zz'
 
@@ -48,3 +49,10 @@ class ADNMBIsland(NextPageStaticHtmlMixin, BaseIsland):
             start_url = base + '/page/1' + '.' + suffix
 
         return start_url
+
+    @classmethod
+    def _thread_res_to_tip(cls, res, pd):
+        return pd.find('div', class_='quote')
+
+    def get_thread_link(self, tip, url):
+        return sanitize.url_clean(url)
