@@ -9,3 +9,5 @@ simple_test.py
 db.sqlite3
 
 cache/
+
+proxy.json
