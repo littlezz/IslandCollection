@@ -27,6 +27,7 @@ class NextPageStaticHtmlMixin:
         return parse.urljoin(self.current_page_url, next_basename), next_page_num
 
     def next_page_valid(self, next_page_url, page_num):
+        print('next', next_page_url)
         return requests.head(next_page_url).ok
 
 

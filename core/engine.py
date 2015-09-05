@@ -104,8 +104,6 @@ class Engine:
         t.start()
         self._thread_tasks.append(t)
 
-        self._pre_work_running = False
-
         for i in range(self.max_thread):
             t = Thread(target=self.worker)
             t.daemon = True
@@ -130,6 +128,8 @@ class Engine:
                     break
 
                 self.add_task(url, response_gt, max_page)
+
+        self._pre_work_running = False
 
 
     def worker(self):
