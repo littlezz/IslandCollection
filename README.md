@@ -1,4 +1,10 @@
+
+#Need to Rewrite with Kivy
+
 # IslandCollection
+
+
+
 
 搜索A岛， K岛等系列岛上一定人气的串的图形化软件。
 
